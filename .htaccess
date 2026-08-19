@@ -42,6 +42,7 @@ RewriteRule ^(lib|partials|docker|scripts|vendor)/ - [F,L]
 RewriteRule (^|/)\.(git|github|claude|env) - [F,L]
 RewriteRule ^composer\.(json|lock)$ - [F,L]
 RewriteRule \.md$ - [F,L]
+RewriteRule \.dc\.html$ - [F,L]
 
 # ---- Hashed CSS bundle -----------------------------------------------------
 # assets/css.php concatenates assets/css/*.css and stamps the URL with a hash of

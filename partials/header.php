@@ -16,7 +16,13 @@ require SLAP_ROOT . '/partials/head.php';
 <header class="masthead seam-bottom">
   <div class="masthead__inner wrap">
     <a class="brand" href="/">
-      <span class="brand__patch" aria-hidden="true">S</span>
+      <?php /* The same file the browser tab loads, rather than the mark inlined
+               a second time here — one definition of the geometry, and it is
+               usually in cache before the masthead paints. alt="" because the
+               brand name follows it as text, and a screen reader announcing
+               "SLAP Baby Designs SLAP Baby Designs" is worse than silence. */ ?>
+      <img class="brand__mark" src="/assets/brand/mark.svg" alt=""
+           width="44" height="44" decoding="async">
       <span class="brand__names">
         <span class="brand__name"><?= slap_e(SLAP_ORG['name']) ?></span>
         <span class="brand__tagline"><?= slap_e(SLAP_ORG['tagline']) ?></span>

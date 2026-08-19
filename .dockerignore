@@ -22,9 +22,16 @@ scripts/
 vendor/
 node_modules/
 
-# --- Docs and archives ---------------------------------------------------------
+# --- Docs, design sources and archives ------------------------------------------
 *.md
 *.zip
+# Claude Design canvases. assets/SLAP Logo.dc.html is the source the brand mark
+# was drawn from; it sits under assets/, so without this line it would be served
+# at /assets/SLAP%20Logo.dc.html — a sketch of the logo, on the live site, asking
+# for a support.js that does not exist. The **/ is load-bearing and not noise:
+# a bare *.dc.html would match the context root only, and the file is one
+# directory down.
+**/*.dc.html
 
 # --- Local design material, not site content -----------------------------------
 # The .dc.html design canvas, its 69KB support.js and the loose WhatsApp photos
