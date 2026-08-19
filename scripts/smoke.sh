@@ -152,6 +152,22 @@ else
     fail "stale hash came back immutable: $stale"
 fi
 
+echo "> Brand assets"
+# The mark and the touch icon are served at FIXED urls whose contents change,
+# unlike a photo, which gets a new filename. If they ever come back immutable
+# again, redrawing the logo silently leaves every returning visitor on the old
+# one for a year — the failure this section exists to catch, because nothing
+# about it is visible on a fresh browser.
+for asset in /assets/brand/mark.svg /assets/brand/apple-touch-icon.png; do
+    status "$asset" 200 "brand asset $asset"
+    cc=$(curl -sI --max-time 15 "$BASE$asset" | tr -d '' | grep -i '^cache-control:' | head -1)
+    if [[ "$cc" == *immutable* ]]; then
+        fail "$asset is immutable, so a redraw would never reach a returning visitor: $cc"
+    else
+        pass "$asset is not cached as immutable"
+    fi
+done
+
 echo "> Headers"
 header / X-Content-Type-Options nosniff
 header / Referrer-Policy        strict-origin

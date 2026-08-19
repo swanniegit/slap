@@ -93,6 +93,19 @@ ErrorDocument 404 /404.php
         Header set Cache-Control "public, max-age=31536000, immutable"
     </FilesMatch>
 
+    # ...but FilesMatch sees the basename, not the path, so the block above also
+    # caught /assets/brand/. Those two files are the opposite case: fixed URLs
+    # whose CONTENTS change. Marked immutable, redrawing the logo left every
+    # returning visitor on the old one for a year with no way to reach them --
+    # which is exactly the trap spelled out for site.js below, arrived at from
+    # the other direction. A day is the staleness window for a mark that changes
+    # about never; Expires has to be unset too, or mod_expires' own year-long
+    # header from the block above outlives this one.
+    <If "%{REQUEST_URI} =~ m#^/assets/brand/#">
+        Header set Cache-Control "public, max-age=86400"
+        Header unset Expires
+    </If>
+
     # NOT immutable. Unlike the stylesheet, /assets/js/site.js is served at a
     # fixed URL with no content hash in it, so "immutable" would mean a fix to
     # the nav script never reaching anyone who had already loaded the old one —
