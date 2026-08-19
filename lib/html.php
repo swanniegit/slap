@@ -95,6 +95,47 @@ function slap_css_url(): string {
 }
 
 /**
+ * og:locale, which wants en_ZA where everything else wants en-ZA.
+ *
+ * Derived rather than declared, because a second constant holding the same
+ * locale with a different punctuation mark is a spelling mistake waiting to
+ * happen in the one place nobody looks -- a social preview.
+ */
+function slap_og_locale(): string {
+    return str_replace('-', '_', SLAP_ORG['locale']);
+}
+
+/**
+ * The value of a custom property in assets/css/tokens.css.
+ *
+ * tokens.css opens by saying a literal colour anywhere else in the project
+ * belongs in that file. PHP could not honour that -- <meta name="theme-color">
+ * and site.webmanifest both had #FFF8EE typed into them, so --paper was
+ * declared in three places and a redesign would have moved one of them.
+ *
+ * Reading the stylesheet is not as odd as it looks: assets/css.php already
+ * reads every one of these files on every request. Memoised, one small file,
+ * and it throws rather than returning '' -- a silent empty theme-color is a
+ * browser chrome that quietly stops matching the page.
+ */
+function slap_css_token(string $name): string {
+    static $tokens = null;
+
+    if ($tokens === null) {
+        $tokens = [];
+        $css = (string)@file_get_contents(SLAP_ROOT . '/assets/css/tokens.css');
+        preg_match_all('/--([a-z0-9-]+)\s*:\s*([^;]+);/i', $css, $m, PREG_SET_ORDER);
+        foreach ($m as $token) {
+            $tokens[$token[1]] ??= trim($token[2]);
+        }
+    }
+
+    return $tokens[$name] ?? throw new RuntimeException(
+        "assets/css/tokens.css declares no --$name"
+    );
+}
+
+/**
  * Content-hashed URL for a file in assets/brand/.
  *
  * The same trick as slap_css_url(), for the same reason and after the same bug.

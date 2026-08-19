@@ -41,6 +41,26 @@ const SLAP_ORG = [
     'region'    => 'South Africa',
     'languages' => ['en', 'af'],
 
+    /*
+     * One sentence about the business, for anywhere that is not a page: the
+     * JSON-LD Organization and the web app manifest.
+     *
+     * It is here because it was in both of those places already, written out
+     * twice, and had drifted: the manifest said "memory bears ... and character
+     * bears made new" while the structured data said "keepsake bears". Two
+     * answers to the same question, both published. Per-PAGE descriptions stay
+     * in lib/pages.php, which is a different job.
+     */
+    'description' => 'Handmade keepsake bears sewn from clothes that already mean something.',
+
+    /*
+     * BCP 47, and the only place the locale is written. It was in four: the
+     * <html lang>, og:locale (in the underscore form), JSON-LD inLanguage, and
+     * site.webmanifest. og_locale() below does the underscore conversion so
+     * that variant is derived rather than typed.
+     */
+    'locale'    => 'en-ZA',
+
     // Empty values are rendered as nothing, never as a fake link — a dead
     // "WhatsApp" in the footer costs more than an absent one.
     'email'         => 'nicolened67@gmail.com',

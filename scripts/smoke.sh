@@ -116,18 +116,49 @@ status /no-such-page-here 404 "nonsense URL returns 404"
 contains /no-such-page-here "A dropped stitch" "404 is the styled page, not Apache's"
 
 echo "> Crawler surface"
+home=$(curl -s --max-time 15 "$BASE/")
 status /robots.txt       200 "robots.txt"
 header /robots.txt       Content-Type text/plain
 status /sitemap.xml      200 "sitemap.xml (rewritten to sitemap.php)"
 header /sitemap.xml      Content-Type xml
 contains /sitemap.xml    "<loc>" "sitemap.xml lists at least one URL"
+header /site.webmanifest Content-Type manifest+json
 status /site.webmanifest 200 "site.webmanifest"
+
+# robots.txt and the manifest are generated now, and both used to state things
+# that could disagree with the rest of the site. The Sitemap: line named the
+# apex host even when this image answered as slap.yellowarcher.co.za, so the
+# check is that it points at the SAME origin the page calls canonical -- which
+# holds on whichever hostname the suite is aimed at.
+origin=$(printf '%s' "$(curl -s --max-time 15 "$BASE/")"          | grep -o 'rel="canonical" href="https\?://[^/"]*' | sed 's/.*href="//' | head -1)
+robots_sitemap=$(curl -s --max-time 15 "$BASE/robots.txt" | grep -i '^Sitemap:' | awk '{print $2}')
+if [[ -n "$origin" && "$robots_sitemap" == "$origin"/* ]]; then
+    pass "robots.txt advertises a sitemap on the canonical origin ($robots_sitemap)"
+else
+    fail "robots.txt Sitemap '$robots_sitemap' is not on the canonical origin '$origin'"
+fi
+
+# The manifest is the last place the icons could still be referenced by their
+# unhashed, one-day-cached paths. It is also the file whose description had
+# drifted from the JSON-LD, which is why both are now read from one constant.
+manifest=$(curl -s --max-time 15 "$BASE/site.webmanifest")
+if printf '%s' "$manifest" | grep -q 'mark\.[a-f0-9]\{8,32\}\.svg'; then
+    pass "manifest icons use content-hashed URLs"
+else
+    fail "manifest icons are not content-hashed"
+fi
+man_desc=$(printf '%s' "$manifest" | grep -o '"description": "[^"]*"' | head -1)
+ld_desc=$(printf '%s' "$home" | grep -o '"description": "[^"]*"' | head -1)
+if [[ -n "$man_desc" && "$man_desc" == "$ld_desc" ]]; then
+    pass "manifest and JSON-LD give the same description"
+else
+    fail "manifest description $man_desc disagrees with JSON-LD $ld_desc"
+fi
 
 echo "> Stylesheet"
 # The href is a hash of the CSS sources; .htaccess rewrites it back to
 # assets/css.php?v=<hash>. If that rewrite is missing the page 404s its own
 # stylesheet and renders unstyled — a total failure that still returns 200.
-home=$(curl -s --max-time 15 "$BASE/")
 css=$(printf '%s' "$home" | grep -o '/assets/site\.[a-f0-9]\{1,32\}\.css' | head -1)
 
 if [[ -z "$css" ]]; then

@@ -65,6 +65,15 @@ RewriteRule ^assets/brand/([a-z0-9-]+)\.[a-f0-9]{8,32}\.(svg|png)$ assets/brand/
 # sitemap.xml with stale dates teaches Google to discount the signal.
 RewriteRule ^sitemap\.xml$ sitemap.php [L]
 
+# ---- Generated robots.txt and web app manifest -----------------------------
+# Both were static and both restated facts the PHP already holds. robots.txt
+# named the apex host in its Sitemap: line even when this image answered as
+# slap.yellowarcher.co.za; the manifest carried a description that had drifted
+# from the JSON-LD, and icon paths that could not be content-hashed because JSON
+# cannot call slap_brand_url().
+RewriteRule ^robots\.txt$ robots.php [L]
+RewriteRule ^site\.webmanifest$ site-webmanifest.php [L]
+
 # NOTE: /enquiry/ is deliberately NOT rewritten. It handles its own POST and its
 # path is a frozen contract with the form's action attribute — any tidy-up rule
 # that touches it silently breaks every enquiry.
