@@ -22,6 +22,18 @@ RewriteBase /
 RewriteCond %{HTTP:X-Forwarded-Proto} =http
 RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L,NE]
 
+# ---- Canonical host: www -> apex --------------------------------------------
+# DNS points both www and the apex at this server, so without this the whole
+# site answers on two hostnames. The <link rel=canonical> already names the apex,
+# but a 301 is what stops the duplicate being crawled, linked and shared at all.
+#
+# Placed AFTER the HTTPS rule so a http://www request makes one hop to
+# https://www and then one to the apex, rather than being handed to a scheme
+# that has no certificate. Keyed on the literal host, so adding a hostname later
+# cannot silently start redirecting it.
+RewriteCond %{HTTP_HOST} ^www\.slapbabydesigns\.co\.za$ [NC]
+RewriteRule ^ https://slapbabydesigns.co.za%{REQUEST_URI} [R=301,L,NE]
+
 # ---- Deny source, config and tooling ---------------------------------------
 # Second layer behind .dockerignore, for anything that arrives another way.
 # Path-based, because FilesMatch only ever sees the basename — /.git/HEAD has
