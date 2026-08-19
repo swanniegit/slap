@@ -1,0 +1,125 @@
+/*
+ * base.css — element defaults and the two document-level pieces of furniture
+ * (the skip link and the focus ring).
+ *
+ * Everything here is unclassed. If a rule needs a class name it belongs in the
+ * file for that component.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Author margins only. Every spacing decision on this site is deliberate and
+   comes from a token; inherited UA margins are how two sections end up with
+   different gaps for no reason anybody can name. */
+body, h1, h2, h3, p, ul, ol, dl, dd, figure, fieldset, legend {
+  margin: 0;
+}
+
+ul, ol {
+  padding: 0;
+  list-style: none;
+}
+
+fieldset {
+  padding: 0;
+  border: 0;
+  min-inline-size: 0;   /* fieldsets refuse to shrink in a grid without this */
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: auto;
+}
+
+/*
+ * A column the height of the viewport, so the footer can be pushed to the
+ * bottom of a short page. The 404 is three sentences long and without this its
+ * ink footer floats halfway up the screen with paper underneath it, which
+ * looks like the page failed to load rather than like a page.
+ */
+body {
+  display: flex;
+  flex-direction: column;
+  min-block-size: 100svh;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--size-body);
+  font-weight: 400;
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* slap_img() always emits width and height, so the intrinsic ratio is known
+   before the file arrives. These two lines are what stop that ratio from
+   forcing the image past its column. */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  color: var(--link);
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.18em;
+}
+
+a:hover {
+  color: var(--ink);
+}
+
+strong {
+  font-weight: 700;
+}
+
+/* Inputs do not inherit type. Everything the enquiry form renders is a real
+   control, so this is not cosmetic. */
+input, textarea, select, button {
+  font: inherit;
+  color: inherit;
+}
+
+textarea {
+  resize: vertical;
+}
+
+::selection {
+  background: var(--gold);
+  color: var(--ink);
+}
+
+/* One ring, everywhere, on whichever ground the element sits on: coloured
+   bands re-point --focus rather than each component inventing its own. */
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+/*
+ * The skip link. Off-screen rather than display:none, so it stays in the tab
+ * order and in the accessibility tree; it only becomes visible once it has
+ * focus, which is the moment it is useful.
+ */
+.skip {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+}
+
+.skip:focus {
+  left: var(--gutter);
+  top: 0.75rem;
+  z-index: 20;
+  padding: 0.75rem 1.25rem;
+  background: var(--ink);
+  color: var(--on-ink);
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+}

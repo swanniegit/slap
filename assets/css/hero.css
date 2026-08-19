@@ -1,0 +1,133 @@
+/*
+ * hero.css
+ *
+ * The hero is a <section class="hero"> and NOT a .band, which is why it sets
+ * its own vertical space here. That is the one exception to the rule in
+ * layout.css, and it is an exception because the hero has no ground of its own
+ * to run out to — the run-in above it is the masthead.
+ *
+ * Copy first in the source and in the single-column stack, because the claim
+ * has to arrive before the proof. Two columns only from 60rem.
+ */
+
+.hero {
+  padding-block: clamp(1.5rem, 3.5vw, 3rem) var(--band-space);
+}
+
+.hero__inner {
+  display: grid;
+  gap: clamp(2rem, 5vw, 3.5rem);
+}
+
+.hero__copy {
+  min-inline-size: 0;
+}
+
+.hero__title {
+  font-size: clamp(2.75rem, 6vw, 5.25rem);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  margin-block-end: var(--stack);
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-block-start: clamp(1.5rem, 3vw, 2.25rem);
+}
+
+/* --- The proof: two stitched panels -------------------------------------- */
+
+.hero__proof {
+  display: grid;
+  gap: var(--stack);
+  min-inline-size: 0;
+}
+
+.hero__panel {
+  padding: 0.6rem;
+  margin: 0;
+  max-inline-size: 21rem;
+}
+
+.hero__photo {
+  inline-size: 100%;
+  /* 3/4 is the source photographs' own ratio. Any other value crops the bear,
+     and the hero photo is the one image on the site that must not be cropped:
+     the care label beside it names the badge that has to stay visible. */
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border-radius: calc(var(--radius) - 0.75rem);
+}
+
+/* The smaller second photo, offset so the pair reads as two pieces laid down
+   rather than as a two-cell grid. */
+.hero__panel--minor {
+  --thread: var(--grape-deep);
+  justify-self: start;
+  max-inline-size: 11rem;
+}
+
+.hero__panel--minor .hero__photo {
+  aspect-ratio: 1 / 1;
+}
+
+.hero__minor-caption {
+  padding: 0.6rem 0.35rem 0.15rem;
+  font-size: var(--label-size);
+  font-weight: var(--label-weight);
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+@media (min-width: 40rem) {
+  /* The minor panel steps in from the right edge, so the pair reads as two
+     pieces laid down by hand. It deliberately does NOT overlap the main panel:
+     the care label lives on that panel's lower corner and an overlap would put
+     a photo on top of the one caption that carries the whole argument. */
+  .hero__panel--minor {
+    justify-self: end;
+    margin-inline-end: clamp(0rem, 4vw, 3rem);
+  }
+}
+
+@media (min-width: 60rem) {
+  .hero__inner {
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    align-items: center;
+    gap: clamp(2.5rem, 6vw, 5rem);
+  }
+}
+
+/*
+ * MOTION — the only orchestrated moment on the site.
+ *
+ * The headline settles onto its seam on load: the line eases up a few px, and
+ * the appliquéd patch lands just after it, as though it were sewn on last.
+ * Everything else on the site is still.
+ *
+ * The whole thing is inside prefers-reduced-motion: no-preference, so a
+ * reduced-motion visitor gets the finished state with no animation to override
+ * and no chance of being left mid-fade if an animation is interrupted.
+ *
+ * `translate` rather than `transform`, because .patch already holds a `rotate`
+ * and the independent transform properties do not overwrite one another.
+ */
+@keyframes slap-settle {
+  from {
+    opacity: 0;
+    translate: 0 0.6rem;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero__title {
+    animation: slap-settle var(--settle) 60ms var(--ease) backwards;
+  }
+
+  .hero__title .patch {
+    animation: slap-settle var(--settle) 220ms var(--ease) backwards;
+  }
+}

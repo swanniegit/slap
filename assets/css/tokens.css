@@ -1,0 +1,117 @@
+/*
+ * tokens.css — every colour, measure, weight and rhythm the site knows.
+ *
+ * Nothing in this file selects anything. It exists so that a value lives in
+ * exactly one place: the mockup carried two different border colours on the
+ * same input and three different greys for "muted text", because each block
+ * was typed from memory. If you are about to write a literal colour, size or
+ * duration in any other file, it belongs here instead.
+ */
+
+:root {
+
+  /* --- Ground ---------------------------------------------------------- */
+  --paper: #FFF8EE;          /* cream calico, the page ground */
+  --paper-raised: #FFFDF8;   /* panel and field fill, a shade above the page */
+  --linen: #F6E3C8;          /* warm second ground, and the hairline rule */
+
+  /* --- Ink ------------------------------------------------------------- */
+  --ink: #2B2440;
+  --ink-soft: #5B5170;       /* 6.9:1 on --paper — safe for body and captions */
+  /* --ink-faint measures 3.4:1 on --paper and 2.9:1 on --linen. That fails AA
+     for body copy outright and does not even clear the 3:1 floor for a rule on
+     the warm ground, so nothing in this stylesheet uses it: captions take
+     --ink-soft and hairlines take --tan. It stays declared because it is part
+     of the approved palette. Do not promote it to text. */
+  --ink-faint: #8C82A8;
+  --on-ink: #FFF8EE;
+  --on-ink-soft: #C9C2DC;    /* 8.6:1 on --ink */
+
+  /* --- Thread colours, taken off the actual bears ----------------------- */
+  --gold: #FFC93C;           /* the sun hat, the yellow pinafore */
+  --gold-deep: #DDA518;
+  --gold-light: #FFE08A;
+  --coral: #FF6B6B;          /* the red bias binding, the nurse's cross */
+  --coral-deep: #D94A4A;     /* 4.1:1 on the panel fill: fine as an edge, not as text */
+  /* The same coral taken down until it is safe to read. --coral-deep is used
+     for the error edges and thread, where 4.1:1 clears the 3:1 floor for a
+     non-text line; the error MESSAGE and the eyebrow are text at 11–17px and
+     need 4.5:1, which this clears at 6.5:1. Two values because they are two
+     different jobs, not because anybody forgot. */
+  --coral-ink: #A83232;
+  --coral-light: #FF9A8B;
+  --sky: #C7EEFB;            /* the cot-sheet print */
+  --sky-mid: #7BD6F0;
+  --sky-deep: #14607C;
+  --grape: #7C5CD6;          /* the ribbon bow */
+  --grape-deep: #5B3FB0;
+  --grape-light: #C3B0F5;
+  --tan: #A0714B;            /* the hairlines inside a care label, 3.4:1 on --linen */
+  /* Approved as #C2410C, which is 4.9:1 on --paper but only 4.1:1 on --linen —
+     and both the "Fresh off the machine" strip and the whole enquiry page are
+     linen grounds, so links there would have shipped under AA. Darkened here
+     along the same hue to 6.3:1 on paper and 5.3:1 on linen. */
+  --link: #A8340B;
+
+  /* --- Type ------------------------------------------------------------- */
+  /* Both faces are loaded once in partials/head.php. The fallbacks matter:
+     Google Fonts is a third-party request and it does fail. */
+  --font-display: 'Baloo 2', 'Trebuchet MS', 'Segoe UI', system-ui, sans-serif;
+  --font-body: Karla, 'Segoe UI', system-ui, -apple-system, sans-serif;
+
+  --size-body: 1.0625rem;    /* 17px — the floor is 16px, this sits above it */
+  --size-small: 0.9375rem;
+  --lh-body: 1.6;
+  --lh-display: 1.05;
+
+  /* The third register, and the only one: the woven care label voice. Every
+     .label, chip, eyebrow, caption and legal line reads in exactly this. */
+  --label-size: 0.72rem;
+  --label-weight: 700;
+  --label-track: 0.16em;
+
+  /* --- Measure and gutters ---------------------------------------------- */
+  --wrap: 72rem;
+  --gutter: clamp(1.25rem, 5vw, 4.5rem);
+  --measure: 60ch;           /* body copy cap */
+  --measure-tight: 46ch;     /* lead paragraphs and panel copy */
+
+  /* --- Vertical rhythm --------------------------------------------------- */
+  /* Section spacing is set by .band in layout.css and by nothing else. */
+  --band-space: clamp(3.5rem, 7vw, 6.25rem);
+  --stack: clamp(1rem, 2vw, 1.5rem);
+  --stack-tight: 0.6rem;
+  --grid-gap: clamp(1.25rem, 3vw, 2.25rem);
+
+  /* --- The seam ---------------------------------------------------------- */
+  /* One rhythm for every stitch on the site, so every seam reads as the same
+     hand. Change these four and the whole site is re-sewn at once. */
+  --stitch-dash: 6px;
+  --stitch-gap: 4px;
+  --stitch-weight: 2.5px;
+  --stitch-inset: 6px;       /* how far the stitch sits in from the panel edge */
+  /* One period of the running stitch, and what every hover marches by. DERIVED,
+     not typed: written as a literal it silently stops matching the moment
+     anyone changes the dash or the gap, and the stitch then reads as a broken
+     rhythm that no single value in this file explains. */
+  --stitch-period: calc(var(--stitch-dash) + var(--stitch-gap));
+  --thread: var(--ink);      /* per-component override; grounds flip it */
+  /* The two ready-made runs of stitch built from these, --stitch-h and
+     --stitch-v, are declared in seam.css and not here. They have to be
+     re-declared per element to pick up that element's --thread, which means a
+     selector, and this file selects nothing. */
+
+  --edge: 2px;               /* the solid panel edge the stitch sits inside */
+  --radius: 1.125rem;
+  --radius-sm: 0.5rem;
+  --radius-pill: 999px;
+
+  /* --- Focus ------------------------------------------------------------- */
+  /* 6.8:1 on --paper. Coloured grounds flip it in layout.css. */
+  --focus: var(--grape-deep);
+
+  /* --- Motion ------------------------------------------------------------ */
+  --speed: 140ms;            /* hover and focus only — 150ms is the ceiling */
+  --ease: cubic-bezier(0.2, 0.7, 0.3, 1);
+  --settle: 480ms;           /* the one orchestrated moment, in hero.css */
+}

@@ -1,0 +1,84 @@
+/*
+ * facts.css — the four claims on the ink band.
+ *
+ * The tone modifier colours the claim and nothing else. Detail text stays on
+ * --on-ink at full strength: four differently-coloured paragraphs would be a
+ * rainbow, and the colour is doing one job here, which is to separate four
+ * claims that are read at a glance.
+ */
+
+/* There are no panel edges between these four, only the hairline above each
+   claim, so the separation has to come from the gap. At the site default they
+   read as one paragraph in four colours. */
+.facts {
+  --grid-gap: clamp(1.75rem, 4vw, 3rem);
+}
+
+.facts__grid {
+  display: grid;
+  gap: var(--grid-gap);
+}
+
+/* Each claim hangs off a short run of its own thread. A solid rule would be the
+   one plain border on the site and it would show — every other structural edge
+   here is stitched. */
+.facts__item {
+  min-inline-size: 0;
+  padding-block-start: var(--stack);
+  border-block-start: var(--stitch-weight) solid var(--thread);
+}
+
+.facts__claim {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.375rem, 2.2vw, 1.75rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-block-end: 0.4rem;
+  color: var(--thread);
+}
+
+.facts__detail {
+  color: var(--on-ink-soft);
+  font-size: var(--size-small);
+  max-inline-size: 32ch;
+}
+
+/*
+ * Each tone points --thread at a value that clears WCAG AA on --ink for the
+ * claim, which is large display text.
+ *   gold        9.6:1
+ *   sky        16.0:1
+ *   coral       5.3:1
+ * --grape (#7C5CD6) is only 3.1:1 on ink — it scrapes AA for large text and
+ * fails outright the moment anyone reuses it at body size. It is replaced here
+ * by --grape-light at 7.6:1; the bow colour survives, the contrast problem
+ * does not.
+ */
+.facts__item--gold {
+  --thread: var(--gold);
+}
+
+.facts__item--sky {
+  --thread: var(--sky);
+}
+
+.facts__item--coral {
+  --thread: var(--coral);
+}
+
+.facts__item--grape {
+  --thread: var(--grape-light);
+}
+
+@media (min-width: 40rem) {
+  .facts__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 60rem) {
+  .facts__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}

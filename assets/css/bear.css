@@ -1,0 +1,176 @@
+/*
+ * bear.css — the bear card, the grid it sits in, and the care label.
+ *
+ * The care label lives in this file because it is the bear's label: the rows
+ * come from lib/bears.php and say what is true of that one bear. The hero
+ * borrows it for its lead photo, which is why the --on-photo variant is here
+ * too rather than in hero.css — one definition, two placements.
+ */
+
+.bear-grid {
+  display: grid;
+  gap: var(--grid-gap);
+}
+
+/*
+ * The gallery: as many ~19rem columns as fit, so the number of bears can change
+ * without anyone editing a breakpoint.
+ *
+ * The min() is not decoration. A bare minmax(19rem, 1fr) sets a hard 19rem
+ * floor, and 19rem is 304px — wider than the content box of a 320px phone once
+ * the gutters are taken off. The track then refuses to shrink and the whole
+ * page scrolls sideways. min(19rem, 100%) lets the last column collapse to the
+ * width actually available.
+ */
+.bear-grid--full {
+  grid-template-columns: repeat(auto-fill, minmax(min(19rem, 100%), 1fr));
+}
+
+.bear-grid--brief {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 40rem) {
+  .bear-grid--brief {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 60rem) {
+  .bear-grid--brief {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* --- The card ------------------------------------------------------------ */
+
+.bear {
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem;
+  margin: 0;
+  min-inline-size: 0;
+}
+
+/* A fixed ratio is what keeps the grid even: the photos are not all the same
+   shape, and without this one long portrait shot sets the height of its whole
+   row. width and height are already on the element from slap_img(), so nothing
+   here reflows once the file arrives. */
+.bear__photo {
+  inline-size: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: calc(var(--radius) - 0.75rem);
+}
+
+.bear__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--stack-tight);
+  padding: 0.9rem 0.35rem 0.25rem;
+  flex: 1;
+}
+
+.bear__name {
+  font-size: 1.25rem;
+  line-height: 1.15;
+}
+
+.bear__blurb {
+  color: var(--ink-soft);
+  font-size: var(--size-small);
+  max-inline-size: var(--measure);
+}
+
+.bear__source {
+  font-size: var(--label-size);
+  font-weight: var(--label-weight);
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* The gallery card's label is pushed to the foot of the card so that the
+   labels line up across a row even when the blurbs run to different lengths. */
+.bear--full .care-label {
+  margin-block-start: auto;
+}
+
+.bear--brief .bear__body {
+  gap: 0.3rem;
+}
+
+/* --- The care label ------------------------------------------------------ */
+/*
+ * A woven garment label, and the site's one structural device. Micro all-caps
+ * captions, hairline rules between the rows, a stitched edge. It must not
+ * decay into a generic caption block: the rules, the tracking and the foot
+ * line are what make it read as something sewn into a seam.
+ */
+
+.care-label {
+  position: relative;
+  padding: 0.75rem 0.85rem;
+  border: var(--edge) solid var(--thread);
+  border-radius: var(--radius-sm);
+  background: var(--linen);
+  color: var(--ink);
+}
+
+.care-label__row {
+  display: grid;
+  gap: 0.1rem;
+  padding-block: 0.4rem;
+}
+
+/* A hairline between rows and none above the first — the rule is a divider,
+   not a border, and a border at the top would fight the stitched edge. */
+.care-label__row + .care-label__row {
+  border-block-start: 1px solid var(--tan);
+}
+
+.care-label__caption {
+  font-size: var(--label-size);
+  font-weight: var(--label-weight);
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  flex: none;
+}
+
+.care-label__value {
+  margin: 0;
+  font-size: var(--size-small);
+  font-weight: 600;
+  min-inline-size: 0;
+}
+
+.care-label__foot {
+  margin-block-start: 0.5rem;
+  padding-block-start: 0.45rem;
+  border-block-start: 1px solid var(--tan);
+  font-size: var(--label-size);
+  font-weight: var(--label-weight);
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  text-align: center;
+}
+
+/*
+ * The hero variant. Below 60rem it simply sits under the photo — a label
+ * covering the bear's face on a 360px screen would hide the one thing the
+ * photograph is there to prove. From 60rem there is room for it to sit over
+ * the lower corner, on a solid paper ground so the words stay readable. It is
+ * a ground, not a shadow: nothing on this site floats.
+ */
+.care-label--on-photo {
+  margin-block-start: 0.75rem;
+}
+
+/* Deliberately NOT overlaid on the photograph.
+   Every position that fitted a label this size landed it on the bear's chest —
+   directly over the sponsor badge that the label's own KEPT row names. A label
+   that hides the thing it is pointing at is worse than no label. It sits below
+   the photo instead, inside the same panel, which is also truer to the object:
+   a care label is sewn into a seam, not stuck on the front. */

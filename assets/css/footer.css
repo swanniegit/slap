@@ -1,0 +1,98 @@
+/*
+ * footer.css — the ink band that closes every page.
+ *
+ * The band modifier in layout.css already set the ground, the text colour, the
+ * thread for the top seam and the focus ring. Nothing here repeats any of that;
+ * this file only lays the columns out and sets the type inside them.
+ */
+
+/* body is a viewport-height column (base.css); this is the line that pushes the
+   footer to the bottom of a page too short to fill the screen. */
+.footer {
+  margin-block-start: auto;
+}
+
+.footer__grid {
+  display: grid;
+  gap: var(--grid-gap);
+}
+
+.footer__about {
+  min-inline-size: 0;
+}
+
+.footer__wordmark {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.375rem;
+  letter-spacing: -0.02em;
+  margin-block-end: 0.4rem;
+}
+
+.footer__blurb {
+  color: var(--on-ink-soft);
+  font-size: var(--size-small);
+  max-inline-size: 40ch;
+}
+
+.footer__col {
+  min-inline-size: 0;
+}
+
+.footer__col .label {
+  margin-block-end: 0.6rem;
+}
+
+.footer__links {
+  display: grid;
+  gap: 0.4rem;
+  font-size: var(--size-small);
+}
+
+/* The link colour token was chosen against paper and is unreadable on ink, so
+   footer links take the band's own text colour and mark themselves with the
+   seam instead — the same underline the menu uses. */
+/* align-items: flex-end rather than centre: the extra height needed to reach a
+   44px target is taken above the words, so the seam stays tight under them. */
+.footer__links a {
+  display: inline-flex;
+  align-items: flex-end;
+  min-block-size: 2.75rem;
+  color: var(--on-ink);
+  text-decoration: none;
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+  text-decoration-thickness: 1px;
+  padding-block-end: 0.15rem;
+  transition: color var(--speed) var(--ease);
+}
+
+.footer__links a:hover {
+  color: var(--gold);
+}
+
+/* The legal line also carries .label, so its colour and register are already
+   set by type.css on the ink band. All it needs here is its own seam above it
+   and the space to sit in. */
+.footer__legal {
+  margin-block-start: clamp(2rem, 4vw, 3rem);
+  padding-block-start: var(--stack);
+  /* A plain rule, not a seam. border-block-start also sidesteps the problem the
+     background-image version had: .footer__legal is itself a .wrap, so a
+     background ran out into the gutters and needed a negative offset to stay
+     off the words. A border is drawn on the border box and just works. */
+  border-block-start: 1px solid var(--on-ink-soft);
+}
+
+@media (min-width: 40rem) {
+  .footer__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 60rem) {
+  .footer__grid {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(2rem, 5vw, 4rem);
+  }
+}

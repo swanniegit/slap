@@ -1,0 +1,116 @@
+/*
+ * type.css — three registers and nothing else.
+ *
+ *   display  Baloo 2 800/600, tight and confident, for headlines only
+ *   body     Karla 400–700 at 17px / 1.6, capped at --measure
+ *   label    Karla 700, 0.72rem, uppercase, 0.16em tracking — the woven care
+ *            label voice, and the ONLY third register on the site
+ *
+ * A fourth register is how a small site starts looking like a template. If a
+ * piece of text does not fit one of these three, the fix is the words.
+ */
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: var(--lh-display);
+  letter-spacing: -0.02em;
+}
+
+.page-title {
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  letter-spacing: -0.03em;
+  max-inline-size: 16ch;
+}
+
+.section-title {
+  font-size: clamp(1.75rem, 3.2vw, 2.5rem);
+  max-inline-size: 18ch;
+}
+
+.lead {
+  font-size: clamp(1.0625rem, 1.5vw, 1.25rem);
+  line-height: 1.55;
+  color: var(--ink-soft);
+  max-inline-size: var(--measure-tight);
+}
+
+/* Body copy on a coloured ground cannot keep using the muted ink — it was
+   chosen for contrast against paper. */
+.band--ink .lead,
+.band--coral .lead {
+  color: inherit;
+}
+
+/*
+ * The label register. Everything that speaks in it — .label itself, .eyebrow,
+ * the chips, the care-label captions, the footer legal line — reads these same
+ * three tokens, so the voice cannot drift between components.
+ */
+.label {
+  font-family: var(--font-body);
+  font-size: var(--label-size);
+  font-weight: var(--label-weight);
+  line-height: 1.4;
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.band--ink .label {
+  color: var(--on-ink-soft);
+}
+
+.eyebrow {
+  font-size: var(--label-size);
+  font-weight: var(--label-weight);
+  line-height: 1.4;
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  color: var(--coral-ink);
+  margin-block-end: var(--stack);
+}
+
+/*
+ * .link-arrow — a link with the seam under it instead of an underline. The
+ * stitch marches one period to the right on hover: the site's single permitted
+ * micro-interaction, and it is the same thread as every other edge.
+ */
+.link-arrow {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4em;
+  /* The top padding is the 44px thumb target and nothing else — it is taken
+     ABOVE the words on purpose. Growing the box downwards, or with
+     min-block-size, would drag the seam away from the text it underlines, and
+     the seam sitting tight under the word is the whole device. Padding does not
+     move a baseline, so this cannot disturb the baseline alignment .section-head
+     relies on either. */
+  padding-block: 0.7rem 0.35em;
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--link);
+  /* This one seam is sewn in the link's own colour rather than the page thread:
+     it is an underline, and an underline in a different colour from the word
+     above it reads as two things. --thread is re-pointed rather than the
+     gradient rewritten, so it is still the one stitch from tokens.css. */
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+  text-decoration-thickness: 2px;
+  transition: color var(--speed) var(--ease);
+}
+
+.link-arrow::after {
+  content: "\2192";
+  font-weight: 400;
+}
+
+.link-arrow:hover {
+  color: var(--ink);
+  background-position: var(--stitch-period) bottom;
+}
+
+.band--ink .link-arrow,
+.band--coral .link-arrow {
+  color: inherit;
+}

@@ -1,0 +1,50 @@
+# The Dockerfile does `COPY . /var/www/html/`, so the build context IS the public
+# webroot. Anything not excluded here is downloadable from slapbabydesigns.co.za.
+# .gitignore does NOT apply to Docker builds — this file is the only control.
+
+# --- Version control and tooling: a served .git/ hands over the whole source ---
+.git
+.gitignore
+.gitattributes
+.github
+.claude
+.dockerignore
+Dockerfile
+
+# --- Secrets -------------------------------------------------------------------
+.env
+.env.*
+
+# --- CI-only helpers: smoke tests and the manifest check never run in the image -
+scripts/
+
+# --- Rebuilt inside the image (composer install runs after COPY) ---------------
+vendor/
+node_modules/
+
+# --- Docs and archives ---------------------------------------------------------
+*.md
+*.zip
+
+# --- Local design material, not site content -----------------------------------
+# The .dc.html design canvas, its 69KB support.js and the loose WhatsApp photos
+# are the sisters' reference material. They are the source the site was drawn
+# from, not the site — and the raw photos are far larger than the versions in
+# assets/img/bears/.
+SLAP Baby Designs website/
+SLAP Baby Designs website.zip
+WhatsApp Image*.jpeg
+slap-baby-designs.css
+
+# --- Runtime state -------------------------------------------------------------
+/data/
+*.log
+
+# TRAP 1: docker/ must NOT be excluded. .dockerignore removes paths from the
+# build context for EVERY COPY, including the two that place php-prod.ini and
+# apache-security.conf — excluding it fails the build with "file not found".
+# It reaches the webroot via `COPY . .`, so the Dockerfile deletes it after.
+#
+# TRAP 2: composer.json and composer.lock must NOT be excluded. The image runs
+# `composer install` during build; without them PHPMailer is missing and every
+# enquiry is saved but never emailed — a silent failure, not a loud one.

@@ -1,0 +1,160 @@
+/*
+ * seam.css — THE signature.
+ *
+ * A memory bear is a garment taken apart and put back together, so every
+ * structural edge on this site is a running stitch. Never a drop shadow, never
+ * an offset block, never a fake 3D lip on a button. That is the one bold idea
+ * and it lives entirely in this file, so there is exactly one place to change
+ * the hand that sewed the site.
+ *
+ * WHY THE STITCH IS DRAWN AND NOT `border-style: dashed`
+ * ------------------------------------------------------
+ * A dashed border lets the browser choose the dash length so that a whole
+ * number of dashes fits each edge. The length therefore changes with the size
+ * of the box, every engine picks differently, and a run of short even dashes
+ * reads as a discount coupon rather than as thread. Drawing the dashes with
+ * repeating-linear-gradient fixes the rhythm: --stitch-dash of thread, then
+ * --stitch-gap of nothing, at --stitch-weight thick, identically on every
+ * component at every size.
+ *
+ * All three primitives paint on a pseudo-element with pointer-events: none, so
+ * nothing here can ever swallow a click or a hover.
+ */
+
+/* --- 0. The stitch itself ------------------------------------------------ */
+/*
+ * One run of running stitch, horizontal and vertical. EVERY seam on this site
+ * is one or more of these two values and nothing else — before they existed the
+ * same gradient was retyped 29 times across 8 files, which is 29 chances for
+ * one component's rhythm to drift from the rest.
+ *
+ * WHY `*` AND NOT `:root`. A var() inside a custom property is substituted
+ * where that property is DECLARED, not where it is used. Declared once on
+ * :root these would bake in :root's --thread (ink) and inherit that literal
+ * everywhere, so .band--ink, .chip--gold, .field--error and every other
+ * re-threading would be silently ignored — the seams would all come out ink and
+ * nothing would look broken enough to notice. Declaring them on every element
+ * lets each one resolve its own --thread. Specificity 0, so any component rule
+ * still wins on --thread itself.
+ */
+* {
+  --stitch-h: repeating-linear-gradient(90deg, var(--thread) 0 var(--stitch-dash), transparent var(--stitch-dash) var(--stitch-period));
+  --stitch-v: repeating-linear-gradient(180deg, var(--thread) 0 var(--stitch-dash), transparent var(--stitch-dash) var(--stitch-period));
+}
+
+/* --- 1. The stitched panel ---------------------------------------------- */
+
+.panel-stitched {
+  position: relative;
+  padding: clamp(1.25rem, 2.5vw, 1.75rem);
+  border: var(--edge) solid var(--thread);
+  border-radius: var(--radius);
+  background: var(--paper-raised);
+}
+
+.panel-stitched::after {
+  content: "";
+  position: absolute;
+  inset: var(--stitch-inset);
+  border-radius: calc(var(--radius) - var(--stitch-inset));
+  pointer-events: none;
+
+  /* Four separate lines, one per edge, rather than one repeating border: the
+     corners then meet as two stitches crossing, which is how a seam actually
+     turns a corner. The border-radius above clips them so the crossing sits
+     inside the rounded corner instead of poking out of it. */
+  background-image:
+    var(--stitch-h),
+    var(--stitch-h),
+    var(--stitch-v),
+    var(--stitch-v);
+  background-size:
+    100% var(--stitch-weight),
+    100% var(--stitch-weight),
+    var(--stitch-weight) 100%,
+    var(--stitch-weight) 100%;
+  background-position:
+    left top,
+    left bottom,
+    left top,
+    right top;
+  background-repeat: no-repeat;
+}
+
+/* --- 2. The section seam -------------------------------------------------- */
+/*
+ * One running stitch across a section boundary. .masthead carries the bottom
+ * one, .cta and .footer the top one. The thread colour comes from the ground
+ * the seam lands on, which the band modifiers in layout.css already set.
+ */
+
+.seam-top,
+.seam-bottom {
+  position: relative;
+}
+
+.seam-top::before,
+.seam-bottom::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  block-size: var(--stitch-weight);
+  pointer-events: none;
+  background-image:
+    var(--stitch-h);
+}
+
+.seam-top::before {
+  inset-block-start: var(--stitch-inset);
+}
+
+.seam-bottom::before {
+  inset-block-end: var(--stitch-inset);
+}
+
+/* --- 3. The appliquéd patch ---------------------------------------------- */
+/*
+ * A scrap of gold fabric sewn onto the headline, used on the word "jersey" and
+ * on the brand mark. It is inline-block so it wraps with the line rather than
+ * breaking it, and the padding is deliberately mean: a patch with generous
+ * padding stops being a patch and starts being a highlighter.
+ *
+ * `rotate` rather than `transform: rotate()` because hero.css animates the
+ * headline's `translate` on load, and the independent transform properties do
+ * not overwrite each other the way two `transform` declarations would.
+ */
+
+.patch {
+  position: relative;
+  display: inline-block;
+  padding: 0.02em 0.3em 0.08em;
+  border-radius: var(--radius-sm);
+  background: var(--gold);
+  color: var(--ink);
+  rotate: -1.5deg;
+  --thread: var(--ink);
+}
+
+/* .brand__patch is the same object cut square for the masthead. Its geometry
+   lives in nav.css; the stitch on it is THIS stitch, listed here rather than
+   retyped there — the two blocks were byte-identical copies of each other. */
+.patch::after,
+.brand__patch::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border-radius: 3px;
+  pointer-events: none;
+  background-image:
+    var(--stitch-h),
+    var(--stitch-h),
+    var(--stitch-v),
+    var(--stitch-v);
+  background-size:
+    100% var(--stitch-weight),
+    100% var(--stitch-weight),
+    var(--stitch-weight) 100%,
+    var(--stitch-weight) 100%;
+  background-position: left top, left bottom, left top, right top;
+  background-repeat: no-repeat;
+}

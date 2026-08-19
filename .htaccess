@@ -1,0 +1,106 @@
+# ============================================================================
+# SLAP Baby Designs — root .htaccess.
+#
+# HAZARD: this is the highest-risk file in the repo. A syntax error here is an
+# instant 500 on EVERY page, and `apachectl configtest` does NOT parse
+# .htaccess — only a real HTTP request does. Never edit this without building
+# the image and curling the site.
+# ============================================================================
+
+Options -Indexes -MultiViews
+DirectoryIndex index.php
+AddDefaultCharset UTF-8
+
+RewriteEngine On
+RewriteBase /
+
+# ---- Force HTTPS -----------------------------------------------------------
+# HAZARD: test =http EXACTLY, never !=https. TLS terminates at the Coolify
+# proxy, so X-Forwarded-Proto is ABSENT on the container health check and on
+# any local `docker run` test. An inverted test redirects those to https,
+# nothing answers, and the deploy never goes healthy.
+RewriteCond %{HTTP:X-Forwarded-Proto} =http
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L,NE]
+
+# ---- Deny source, config and tooling ---------------------------------------
+# Second layer behind .dockerignore, for anything that arrives another way.
+# Path-based, because FilesMatch only ever sees the basename — /.git/HEAD has
+# the perfectly innocent filename "HEAD".
+RewriteRule ^(lib|partials|docker|scripts|vendor)/ - [F,L]
+RewriteRule (^|/)\.(git|github|claude|env) - [F,L]
+RewriteRule ^composer\.(json|lock)$ - [F,L]
+RewriteRule \.md$ - [F,L]
+
+# ---- Hashed CSS bundle -----------------------------------------------------
+# assets/css.php concatenates assets/css/*.css and stamps the URL with a hash of
+# their contents, so the year-long immutable cache below is safe: a change to
+# any part produces a new filename. The hash is passed through so css.php can
+# reject a stale one rather than serve mismatched bytes under a cached URL.
+RewriteRule ^assets/site\.([a-f0-9]+)\.css$ assets/css.php?v=$1 [L,QSA]
+
+# ---- Generated sitemap -----------------------------------------------------
+# Built from lib/pages.php so lastmod cannot drift from the manifest. A static
+# sitemap.xml with stale dates teaches Google to discount the signal.
+RewriteRule ^sitemap\.xml$ sitemap.php [L]
+
+# NOTE: /enquiry/ is deliberately NOT rewritten. It handles its own POST and its
+# path is a frozen contract with the form's action attribute — any tidy-up rule
+# that touches it silently breaks every enquiry.
+
+ErrorDocument 404 /404.php
+
+# ---- Compression -----------------------------------------------------------
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css text/plain \
+        application/javascript application/json application/xml text/xml \
+        image/svg+xml application/manifest+json
+</IfModule>
+# jpeg/webp/woff2 are already compressed; recompressing only burns CPU.
+
+# ---- Caching ---------------------------------------------------------------
+# HAZARD: no ExpiresDefault and no text/css entry, deliberately. mod_expires
+# merges its own max-age into an existing Cache-Control, so either would collide
+# with the header assets/css.php sets per-request — it serves "immutable" only
+# when the requested hash matches the CSS on disk, and must stay in charge of
+# that decision. Same reason text/html is absent: PHP pages set their own.
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpeg    "access plus 1 year"
+    ExpiresByType image/png     "access plus 1 year"
+    ExpiresByType image/webp    "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+</IfModule>
+
+<IfModule mod_headers.c>
+    # /assets/img/* and the fonts only. These are content the browser may keep
+    # for a year, because a changed photo gets a new filename. .css is absent
+    # for the css.php reason above; .js is below, and separately, because it
+    # does NOT get a new filename when it changes.
+    <FilesMatch "\.(jpe?g|png|webp|svg|woff2?)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+
+    # NOT immutable. Unlike the stylesheet, /assets/js/site.js is served at a
+    # fixed URL with no content hash in it, so "immutable" would mean a fix to
+    # the nav script never reaching anyone who had already loaded the old one —
+    # for a year, with no way to reach those browsers. An hour is plenty for a
+    # 3KB file that is deferred and purely progressive enhancement.
+    <FilesMatch "\.js$">
+        Header set Cache-Control "public, max-age=3600"
+    </FilesMatch>
+
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Referrer-Policy        "strict-origin-when-cross-origin"
+    # DENY, not SAMEORIGIN: nothing on this site is ever framed, and a keepsake
+    # business is exactly the sort of thing that gets clickjacked into a scam.
+    Header always set X-Frame-Options        "DENY"
+    Header always set Permissions-Policy     "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+    Header always unset X-Powered-By
+
+    # HSTS is set only on genuinely-HTTPS requests, so a local container test
+    # over plain HTTP cannot pin the developer's browser to https://localhost.
+    # Starts short on purpose: preload is effectively irreversible. Raise to
+    # 31536000 once the domain has run a clean week on HTTPS.
+    Header always set Strict-Transport-Security "max-age=300" \
+        "expr=%{HTTP:X-Forwarded-Proto} == 'https'"
+</IfModule>

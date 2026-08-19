@@ -1,0 +1,76 @@
+/*
+ * panel.css — the two routes.
+ *
+ * Two panels joined down a centre seam, because the choice really is a fork.
+ * The join is drawn on the pair, not on either panel: a seam belongs to the
+ * two pieces it holds together, and drawing it once means it cannot end up as
+ * two slightly different lines.
+ */
+
+.routes .section-title {
+  margin-block-end: var(--grid-gap);
+}
+
+.routes__pair {
+  position: relative;
+  display: grid;
+  gap: var(--grid-gap);
+}
+
+.routes__panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--stack-tight);
+  min-inline-size: 0;
+}
+
+.routes__title {
+  font-size: clamp(1.375rem, 2.4vw, 1.875rem);
+  margin-block-start: 0.25rem;
+}
+
+.routes__copy {
+  color: var(--ink-soft);
+  max-inline-size: var(--measure);
+}
+
+/* margin, not padding: .link-arrow's own padding-block-start is what gives it a
+   44px target, and overriding it here would quietly take that back. */
+.routes__panel .link-arrow {
+  margin-block-start: auto;
+}
+
+/* Ground and thread only. Both grounds are near-white tints so the body copy
+   keeps its contrast against them. */
+.routes__panel--gold {
+  --thread: var(--gold-deep);
+  background: var(--paper-raised);
+}
+
+.routes__panel--sky {
+  --thread: var(--sky-deep);
+  background: var(--paper-raised);
+}
+
+@media (min-width: 40rem) {
+  .routes__pair {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+  }
+
+  /* The centre seam: one running stitch down the gap between the two panels,
+     in the neutral thread, joining them. It is decoration on top of empty
+     space, hence pointer-events: none. */
+  .routes__pair::after {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 50%;
+    translate: -50% 0;
+    inline-size: var(--stitch-weight);
+    pointer-events: none;
+    background-image:
+      var(--stitch-v);
+  }
+}

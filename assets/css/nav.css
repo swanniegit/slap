@@ -1,0 +1,335 @@
+/*
+ * nav.css — the masthead, the primary menu, and the chip.
+ *
+ * The chip lives here rather than in panel.css because there is only one chip:
+ * the gallery filter links and the two route kind-labels are the same object
+ * doing the same job, and giving them two definitions is how they end up two
+ * different sizes.
+ *
+ * THE MENU COLLAPSE. partials/header.php renders the menu as
+ * <ul class="menu" id="site-menu" data-open="false">. The script only ever
+ * flips that attribute and aria-expanded on the button; every decision about
+ * what is shown is made here. That means the open/closed behaviour can be read
+ * in one file and cannot drift out of step with the script.
+ */
+
+.masthead {
+  background: var(--paper);
+  padding-block: 1rem;
+  /* A softer thread than a panel's. This seam runs the full width of the page,
+     so at ink weight it read as a cut-here line across the top rather than as
+     a join, and it out-shouted the stitched panels it sits above. */
+  --thread: var(--tan);
+}
+
+.masthead__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  /* No row gap: below the collapse the closed menu is a zero-height flex line,
+     and a row gap would leave a phantom band of space under the brand. */
+  gap: 0 0.75rem;
+}
+
+/*
+ * The flex item here is the <nav>, not the .menu inside it, so the full-width
+ * second line has to be claimed on the nav — putting flex-basis on .menu does
+ * nothing, because .menu is not a child of the flex container.
+ */
+.masthead__inner > nav {
+  flex-basis: 100%;
+}
+
+/* --- Brand --------------------------------------------------------------- */
+
+/* The 2.5rem patch sets the height, which lands the link at 40px — 4px under a
+   thumb target. The floor is on the link, not the patch, so the mark keeps its
+   size and only the hit area grows. */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 2.75rem;
+  gap: 0.75rem;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+/* The same scrap of gold fabric as the headline patch, cut square and carrying
+   the S. Geometry only: the stitch on it is drawn by the .brand__patch::after
+   half of the .patch::after rule in seam.css, so there is one definition of the
+   patch seam and not two. */
+.brand__patch {
+  position: relative;
+  display: grid;
+  place-items: center;
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  border-radius: var(--radius-sm);
+  background: var(--gold);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.25rem;
+  line-height: 1;
+  rotate: -3deg;
+  flex: none;
+}
+
+.brand__names {
+  display: grid;
+}
+
+.brand__name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.125rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.brand__tagline {
+  font-size: var(--label-size);
+  font-weight: var(--label-weight);
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* --- The toggle ---------------------------------------------------------- */
+
+/*
+ * NOT shown by default. The toggle only does something once assets/js/site.js
+ * has run, and that script announces itself with data-js on <html>; the rule
+ * that reveals this button is therefore qualified by :root[data-js] and lives
+ * in the narrow-width block below. Shown unconditionally it is a dead control
+ * for a visitor with scripting off — and, worse, its partner rule would have
+ * hidden the menu it cannot open.
+ */
+.masthead__toggle {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  /* 44px minimum in both directions: this is a phone control and the label
+     inside it is 11px, which on its own padding comes out at about 30px. */
+  min-block-size: 2.75rem;
+  min-inline-size: 2.75rem;
+  justify-content: center;
+  padding: 0.55rem 0.9rem;
+  border: var(--edge) solid var(--ink);
+  border-radius: var(--radius-pill);
+  background: var(--paper-raised);
+  cursor: pointer;
+  font-size: var(--label-size);
+  font-weight: var(--label-weight);
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  transition: background-color var(--speed) var(--ease);
+}
+
+.masthead__toggle[aria-expanded="true"] {
+  background: var(--gold);
+}
+
+/* The button says "Menu" in words. The stitched bars beside it are aria-hidden
+   decoration — do not swap this for an icon-only control. */
+.masthead__toggle-text {
+  line-height: 1;
+}
+
+/* Three rows of running stitch rather than three solid bars: the hamburger is
+   the only icon on the site and it may as well be sewn too. */
+.masthead__toggle-bar {
+  inline-size: 1.25rem;
+  block-size: 0.75rem;
+  background-image:
+    linear-gradient(var(--ink), var(--ink)),
+    linear-gradient(var(--ink), var(--ink)),
+    linear-gradient(var(--ink), var(--ink));
+  background-size: 100% var(--stitch-weight);
+  background-position: left top, left center, left bottom;
+  background-repeat: no-repeat;
+}
+
+/* --- The menu ------------------------------------------------------------ */
+
+/*
+ * Visible by default, in every case. Hiding it is the enhancement, not the
+ * baseline: see the :root[data-js] block below. With scripting off this stays a
+ * plain stacked list of links, which is what the contract at the top of
+ * assets/js/site.js requires.
+ */
+.menu {
+  display: grid;
+  justify-items: start;
+  gap: 0.5rem;
+  padding-block: 0.75rem;
+}
+
+.menu__item {
+  display: contents;
+}
+
+/* The seam under a menu link is its state: nothing under a plain link, a full
+   run of stitch under the current page and under whatever the pointer is on.
+   Never colour alone — aria-current carries the same fact to a screen reader. */
+.menu__link {
+  display: inline-flex;
+  align-items: center;
+  /* 44px minimum. The extra height is padding, so the seam still lands just
+     under the words rather than floating away from them. */
+  min-block-size: 2.75rem;
+  padding: 0.55rem 0;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--ink);
+  /* A solid rule that grows from the left on hover. The seam is reserved for
+     structural joins; a nav underline is an underline. */
+  background-image: linear-gradient(var(--coral), var(--coral));
+  background-size: 0 var(--stitch-weight);
+  background-position: left bottom;
+  background-repeat: no-repeat;
+  transition: background-size var(--speed) var(--ease), color var(--speed) var(--ease);
+}
+
+.menu__link:hover,
+.menu__link[aria-current="page"] {
+  background-size: 100% var(--stitch-weight);
+  color: var(--ink);
+}
+
+
+
+/*
+ * THE COLLAPSE, and the only place it is decided.
+ *
+ * Both rules are qualified by :root[data-js], which assets/js/site.js sets on
+ * <html> before first paint. Unqualified, they are the classic silent failure:
+ * scripting off means a menu hidden by CSS behind a button that cannot open it,
+ * i.e. a phone visitor with no navigation at all and nothing on screen to say
+ * so. 47.99rem rather than 48rem so this and the wide block below cannot both
+ * match at exactly the breakpoint.
+ */
+@media (max-width: 47.99rem) {
+  :root[data-js] .masthead__toggle {
+    display: inline-flex;
+  }
+
+  :root[data-js] .menu[data-open="false"] {
+    display: none;
+  }
+}
+
+@media (min-width: 48rem) {
+  /* Above the collapse the menu is simply a row and the button has no job. */
+  .masthead__toggle,
+  :root[data-js] .masthead__toggle {
+    display: none;
+  }
+
+  .masthead__inner {
+    gap: 1rem;
+  }
+
+  .masthead__inner > nav {
+    flex-basis: auto;
+  }
+
+  .menu,
+  .menu[data-open="true"],
+  :root[data-js] .menu[data-open="false"] {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 2.5vw, 2rem);
+    padding-block: 0;
+  }
+
+  .menu__item {
+    display: block;
+  }
+}
+
+/* --- The chip ------------------------------------------------------------ */
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-block-start: var(--stack);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  padding: 0.4em 0.9em;
+  border: var(--edge) solid var(--thread);
+  border-radius: var(--radius-pill);
+  background: var(--paper-raised);
+  color: var(--ink-soft);
+  font-size: var(--label-size);
+  font-weight: var(--label-weight);
+  letter-spacing: var(--label-track);
+  line-height: 1.4;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background-color var(--speed) var(--ease), color var(--speed) var(--ease);
+}
+
+/*
+ * Only the gallery filters are links; .chip--gold and .chip--sky are <p> route
+ * labels and must keep their small pill shape. So the 44px minimum target is
+ * hung on a.chip, not on .chip — a filter is a thumb target on a phone, and at
+ * the label register the pill is otherwise about 25px tall.
+ */
+a.chip {
+  min-block-size: 2.75rem;
+  padding-inline: 1.1em;
+}
+
+a.chip:hover {
+  background: var(--linen);
+  color: var(--ink);
+}
+
+/*
+ * The active filter. It is marked three ways and only one of them is colour:
+ * a filled marker square appears in front of the label, the ground inverts and
+ * the label goes to full-strength ink. The marker is an empty pseudo-element
+ * rather than a tick glyph so no screen reader reads a stray character —
+ * aria-current on the link already says which one is on.
+ */
+.chip--on {
+  background: var(--ink);
+  color: var(--on-ink);
+  --thread: var(--ink);
+}
+
+.chip--on::before {
+  content: "";
+  inline-size: 0.5em;
+  block-size: 0.5em;
+  border-radius: 1px;
+  background: var(--gold);
+  flex: none;
+}
+
+a.chip--on:hover {
+  background: var(--grape-deep);
+  color: var(--on-ink);
+}
+
+/* The two route kind-labels. Non-interactive, so they carry ground only. */
+.chip--gold {
+  background: var(--gold-light);
+  color: var(--ink);
+  --thread: var(--gold-deep);
+}
+
+/* --sky-deep on --sky is 4.3:1, and this label is 11px uppercase — text that
+   small needs 4.5:1. The deep sky stays as the edge; the words go to ink. */
+.chip--sky {
+  background: var(--sky);
+  color: var(--ink);
+  --thread: var(--sky-deep);
+}

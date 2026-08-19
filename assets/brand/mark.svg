@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="SLAP Baby Designs">
+  <title>SLAP Baby Designs</title>
+
+  <!-- A fabric patch: gold ground, hand-stitched edge, one letter. Three shapes
+       and nothing else, because this is used at 16x16 in a browser tab where a
+       fourth shape becomes a smudge. -->
+  <rect width="64" height="64" rx="13" fill="#FFC93C"/>
+
+  <!-- The running stitch is a stroked rect with a dash array, NOT a dashed
+       border: an SVG has no CSS to inherit in a favicon context, and a dashed
+       CSS border would not render at all when the file is loaded as an icon.
+       Round caps make each dash read as a stitch rather than a tick. -->
+  <rect x="7" y="7" width="50" height="50" rx="8"
+        fill="none" stroke="#2B2440" stroke-width="3.2"
+        stroke-dasharray="7 5.5" stroke-linecap="round"/>
+
+  <!-- The S is a path, not <text>. A webfont cannot load in a favicon and even a
+       system font would be substituted differently on every OS, so the mark
+       would change shape per visitor. A stroked path is identical everywhere. -->
+  <path d="M39.5 24.5C39.5 19.5 24.5 18.5 24.5 25.5C24.5 31.5 39.5 31 39.5 38.5C39.5 46 24.5 45.5 24.5 40.5"
+        fill="none" stroke="#2B2440" stroke-width="6.5"
+        stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

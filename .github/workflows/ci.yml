@@ -1,0 +1,79 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # "verify" is the name branch protection keys on. Renaming this job silently
+  # unblocks every PR, because a required check that does not exist is treated
+  # as not-yet-reported rather than failed.
+  verify:
+    name: verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          # Must match the php:8.2-apache base image. A newer PHP here would
+          # pass syntax that the container then fatals on at request time, and
+          # the first anyone hears of it is a 500 in production.
+          php-version: "8.2"
+          extensions: mbstring
+          tools: composer
+
+      - name: Validate composer.json
+        run: composer validate --no-check-publish
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Manifest guard
+        run: php scripts/check-manifest.php
+
+      - name: PHP syntax check (lint)
+        # Every file, not just changed ones: a partial that only one page
+        # includes is otherwise never parsed until someone visits that page.
+        run: |
+          find . -type f -name '*.php' -not -path './vendor/*' \
+            | xargs -n1 -P4 php -l
+
+  smoke:
+    # The site deploys straight to production on merge and has no staging, so
+    # this job is the staging gate. None of it can be checked statically:
+    # `apachectl configtest` does not validate .htaccess, and only a real
+    # request proves that lib/config.php is not downloadable.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Build image
+        run: docker build -t slap-test .
+
+      - name: Boot container
+        run: |
+          docker run -d -p 8099:80 --name slap-test slap-test
+          for i in $(seq 1 30); do
+            if curl -sf -o /dev/null http://localhost:8099/; then
+              echo "up after ${i}s"; exit 0
+            fi
+            sleep 1
+          done
+          echo "container never answered"; docker logs slap-test; exit 1
+
+      - name: Smoke tests
+        run: bash scripts/smoke.sh http://localhost:8099
+
+      - name: Apache and PHP logs on failure
+        if: failure()
+        # Without this the only evidence of a 500 is the status code. The
+        # container is not --rm precisely so these survive a failed run.
+        run: docker logs slap-test
+
+      - name: Stop container
+        if: always()
+        run: docker rm -f slap-test || true

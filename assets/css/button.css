@@ -1,0 +1,92 @@
+/*
+ * button.css
+ *
+ * The affordance is the ground and the stitch. Explicitly NOT a fake 3D lip
+ * (box-shadow: 0 5px 0) and NOT an offset block shadow — those were the
+ * mockup's devices, they belong to a different site, and a button that pretends
+ * to be 5px tall has to pretend to be pressed as well, which is two lies to
+ * maintain instead of none.
+ *
+ * On hover the stitch marches one full period sideways. That is the whole
+ * interaction, it is the same thread as every seam on the site, and it costs
+ * one animatable property.
+ */
+
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  padding: 0.85em 1.6em;
+  /* At 15px/1.2 the padding above lands the button at ~43.5px, which is a hair
+     under the 44px thumb target. This sets the floor without touching the
+     padding the stitch inset is tuned to. */
+  min-block-size: 2.75rem;
+  border: var(--edge) solid var(--thread);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--size-small);
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  background: transparent;
+  color: var(--ink);
+  transition: background-color var(--speed) var(--ease), color var(--speed) var(--ease);
+}
+
+/* --- Variants: ground and thread only ----------------------------------- */
+
+/* Gold thread, but NOT a gold focus ring. The ring is drawn 3px outside the
+   button, which means it lands on the cream page, where gold measures 1.5:1 and
+   effectively disappears. The ground a ring sits on is the page behind the
+   element, not the element — so this keeps the page's own --focus. */
+.btn--ink {
+  background: var(--ink);
+  color: var(--on-ink);
+  --thread: var(--gold);
+}
+
+.btn--ink:hover {
+  background: var(--grape-deep);
+  color: var(--on-ink);
+}
+
+/* Ink on coral is 5.3:1 — the coral button keeps dark text rather than white,
+   which would be 2.6:1 and unreadable in daylight on a phone. */
+.btn--coral {
+  background: var(--coral);
+  color: var(--ink);
+  --thread: var(--ink);
+}
+
+.btn--coral:hover {
+  background: var(--coral-light);
+  color: var(--ink);
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--ink);
+  --thread: var(--ink);
+}
+
+.btn--ghost:hover {
+  background: var(--linen);
+  color: var(--ink);
+}
+
+/* Sits on the coral band, so it needs its own ground rather than inheriting. */
+.btn--paper {
+  background: var(--paper);
+  color: var(--ink);
+  --thread: var(--ink);
+}
+
+.btn--paper:hover {
+  background: var(--gold);
+  color: var(--ink);
+}

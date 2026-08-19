@@ -1,0 +1,164 @@
+/*
+ * layout.css — the measure, the section rhythm, and the section-level furniture
+ * that sits directly inside a band.
+ *
+ * SPECIFICITY DISCIPLINE: .band is the ONLY rule in the whole stylesheet that
+ * sets section-level vertical spacing. Modifiers (.band--ink, .band--coral) and
+ * the per-page section classes (.gallery, .recent, .cta, .enquiry, .page-head)
+ * change ground, thread and colour and nothing else. The moment a second rule
+ * sets padding-block on a section, the two start cancelling each other and the
+ * fix is always another rule on top — which is how a stylesheet acquires
+ * override flags. There are none anywhere in this system, by design.
+ */
+
+.wrap {
+  inline-size: 100%;
+  max-inline-size: var(--wrap);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.band {
+  padding-block: var(--band-space);
+}
+
+/* A page head and the section under it are one block of content, so the two
+   rhythms between them collapse to one. Coloured bands are excluded: a ground
+   change needs its full run-in or the colour looks like it slipped. */
+.page-head + .band:not(.band--ink):not(.band--coral) {
+  padding-block-start: 0;
+}
+
+.band--ink {
+  background: var(--ink);
+  color: var(--on-ink);
+  --thread: var(--on-ink-soft);
+  --focus: var(--gold);
+}
+
+.band--coral {
+  background: var(--coral);
+  color: var(--ink);
+  --thread: var(--ink);
+  --focus: var(--ink);
+}
+
+/* --- Page head ---------------------------------------------------------- */
+
+.page-head .lead {
+  margin-block-start: var(--stack);
+}
+
+/* --- Section head: a title with a link parked at the end of its line ----- */
+
+.section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--stack-tight) var(--stack);
+  margin-block-end: var(--grid-gap);
+}
+
+/* --- Home: the recent strip --------------------------------------------- */
+
+.recent {
+  background: var(--linen);
+}
+
+/* --- Gallery ------------------------------------------------------------- */
+
+/* Photographs need more air between them than blocks of text do: at the default
+   gap the bear panels start reading as one contact sheet rather than as nine
+   separate bears. */
+.gallery {
+  --grid-gap: clamp(1.5rem, 3.5vw, 2.75rem);
+}
+
+.gallery__count {
+  margin-block-end: var(--grid-gap);
+  color: var(--ink-soft);
+  font-size: var(--size-small);
+}
+
+/* --- Enquiry ------------------------------------------------------------- */
+
+/* The warm ground is what lifts the form panel off the page: the panel fill is
+   only a shade above paper, and on paper the form has no edge worth seeing. */
+.enquiry {
+  background: var(--linen);
+}
+
+.enquiry__grid {
+  display: grid;
+  gap: var(--grid-gap);
+}
+
+.enquiry__intro .lead {
+  margin-block-start: var(--stack);
+}
+
+/* Grid children default to min-width: auto, which means one unbreakable string
+   in the textarea would widen the column and push the page sideways. */
+.enquiry__form {
+  min-inline-size: 0;
+}
+
+@media (min-width: 60rem) {
+  .enquiry__grid {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: start;
+  }
+}
+
+/* --- The closing call to action ------------------------------------------ */
+
+/* The CTA is the one block that appears on every page, and it has to set in
+   the same shape on all of them — hence its own measure rather than whatever
+   the surrounding page happens to be using. */
+.cta {
+  --measure-tight: 44ch;
+}
+
+.cta__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--stack);
+}
+
+.cta__title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  line-height: var(--lh-display);
+  letter-spacing: -0.02em;
+  max-inline-size: 18ch;
+}
+
+.cta__copy {
+  max-inline-size: var(--measure-tight);
+}
+
+@media (min-width: 60rem) {
+  .cta__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    column-gap: clamp(2rem, 5vw, 4rem);
+  }
+
+  /* The button rides on the second column under the copy, so the eye lands on
+     the sentence and then on the thing to press, not the other way round. */
+  .cta__title {
+    grid-row: span 2;
+    align-self: center;
+  }
+
+  /* Grid items stretch by default and a full-column-wide button reads as a
+     banner rather than a button. */
+  .cta__inner .btn {
+    justify-self: start;
+  }
+}

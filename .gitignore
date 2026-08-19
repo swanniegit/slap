@@ -1,0 +1,24 @@
+# Installed by `composer install`, and rebuilt inside the image at build time.
+vendor/
+
+# Secrets. SMTP credentials for the enquiry notification live here.
+.env
+.env.*
+
+# The enquiry log volume. Real customer names, emails and phone numbers —
+# never in version control.
+/data/
+*.log
+
+# Local design material: the .dc.html design canvas, its support.js and the
+# loose WhatsApp photos the sisters sent. Reference for building the site, not
+# part of the site. The real images live in assets/img/bears/.
+SLAP Baby Designs website/
+SLAP Baby Designs website.zip
+WhatsApp Image*.jpeg
+slap-baby-designs.css
+
+# OS junk
+Thumbs.db
+desktop.ini
+.DS_Store

@@ -1,0 +1,55 @@
+/*
+ * steps.css — "What happens after you press send", the numbered list rendered
+ * by partials/enquiry-steps.php.
+ *
+ * It sits BESIDE the enquiry form, not inside it: it is the only numbered
+ * sequence on the site, it contains no controls, and it has no notion of a
+ * value, an error or a submission. It lived in form.css, which meant the file
+ * named after the form owned three unrelated components.
+ */
+
+.steps {
+  display: grid;
+  gap: var(--stack);
+  margin-block-start: clamp(1.5rem, 3vw, 2.25rem);
+}
+
+.steps__step {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+}
+
+/* A small stitched square — the same seam as every panel, at label size. */
+.steps__number {
+  position: relative;
+  display: grid;
+  place-items: center;
+  inline-size: 2.25rem;
+  block-size: 2.25rem;
+  flex: none;
+  border: var(--edge) solid var(--thread);
+  border-radius: var(--radius-sm);
+  background: var(--gold);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.steps__body {
+  display: grid;
+  gap: 0.15rem;
+  min-inline-size: 0;
+}
+
+.steps__title {
+  font-weight: 700;
+}
+
+.steps__detail {
+  color: var(--ink-soft);
+  font-size: var(--size-small);
+  max-inline-size: var(--measure);
+}
