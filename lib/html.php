@@ -93,6 +93,33 @@ function slap_css_url(): string {
     return '/assets/site.' . slap_css_version() . '.css';
 }
 
+/**
+ * Content-hashed URL for a file in assets/brand/.
+ *
+ * The same trick as slap_css_url(), for the same reason and after the same bug.
+ * The mark and the touch icon are the one kind of asset this site has that
+ * changes WITHOUT changing its filename: a photo of a new bear arrives as a new
+ * file, but redrawing the logo rewrites mark.svg in place. Served at a fixed URL
+ * they were cached as immutable for a year, so the bear that replaced the gold S
+ * patch never reached a single returning visitor — and could not, because a
+ * browser holding an immutable entry does not revalidate it. Shortening the
+ * max-age fixed that going forward but reaches nobody already holding one; only
+ * a different URL does, and that is this.
+ *
+ * .htaccess rewrites the hash back out again, so the bytes are still served from
+ * disk by Apache and no PHP runs per request. The unhashed path keeps working
+ * for site.webmanifest and for anything that guesses at /assets/brand/mark.svg.
+ */
+function slap_brand_url(string $file): string {
+    static $urls = [];
+    if (isset($urls[$file])) return $urls[$file];
+
+    $hash = substr(hash('xxh128', (string)@file_get_contents(SLAP_ROOT . '/assets/brand/' . $file)), 0, 12);
+    $dot  = strrpos($file, '.');
+
+    return $urls[$file] = '/assets/brand/' . substr($file, 0, $dot) . '.' . $hash . substr($file, $dot);
+}
+
 /** Per-request CSP nonce. The JSON-LD block needs it too — script-src governs it. */
 function slap_nonce(): string {
     static $n = null;

@@ -153,20 +153,41 @@ else
 fi
 
 echo "> Brand assets"
-# The mark and the touch icon are served at FIXED urls whose contents change,
-# unlike a photo, which gets a new filename. If they ever come back immutable
-# again, redrawing the logo silently leaves every returning visitor on the old
-# one for a year — the failure this section exists to catch, because nothing
-# about it is visible on a fresh browser.
+# The mark and the touch icon change WITHOUT changing filename, unlike a photo.
+# Served at a fixed URL and marked immutable, redrawing the logo reaches nobody
+# who has already visited — a browser holding an immutable entry does not
+# revalidate it. So the pages reference a hashed URL, and the two forms need
+# opposite policies. None of this is visible on a fresh browser: it is invisible
+# precisely to whoever is testing, which is why it is asserted here.
+brand_cc() { curl -sI --max-time 15 "$BASE$1" | tr -d '' | grep -i '^cache-control:' | head -1; }
+
+# The plain path must stay short: a fixed URL whose contents change.
 for asset in /assets/brand/mark.svg /assets/brand/apple-touch-icon.png; do
     status "$asset" 200 "brand asset $asset"
-    cc=$(curl -sI --max-time 15 "$BASE$asset" | tr -d '' | grep -i '^cache-control:' | head -1)
+    cc=$(brand_cc "$asset")
     if [[ "$cc" == *immutable* ]]; then
         fail "$asset is immutable, so a redraw would never reach a returning visitor: $cc"
     else
         pass "$asset is not cached as immutable"
     fi
 done
+
+# The hashed path is what the pages actually load. An unhashed <img src> would
+# mean the fix is not wired up at all, and nothing else here would notice.
+hashed=$(printf '%s' "$home" | grep -o '/assets/brand/mark\.[a-f0-9]\{8,32\}\.svg' | head -1)
+if [[ -z "$hashed" ]]; then
+    fail "the masthead does not reference a hashed mark URL"
+else
+    pass "masthead references hashed mark: $hashed"
+    status "$hashed" 200 "hashed mark rewrites back to the file"
+    header "$hashed" Content-Type image/svg+xml
+    cc=$(brand_cc "$hashed")
+    if [[ "$cc" == *immutable* ]]; then
+        pass "hashed mark is cached as immutable"
+    else
+        fail "hashed mark is not immutable, so the hash buys nothing: $cc"
+    fi
+fi
 
 echo "> Headers"
 header / X-Content-Type-Options nosniff
