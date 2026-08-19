@@ -35,6 +35,25 @@ jobs:
       - name: Manifest guard
         run: php scripts/check-manifest.php
 
+      - name: Set up Python
+        # Only for the brand-icon guard below. Pinned, because that guard
+        # compares rendered pixels and resampling can shift by a level or two
+        # between Pillow releases.
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Pillow
+        run: pip install --quiet "pillow==11.3.0"
+
+      - name: Brand icon matches the mark
+        # assets/brand/apple-touch-icon.png is rendered from mark.svg, and the
+        # two are committed separately. Redraw the mark without re-running the
+        # script and the tab icon and the home-screen icon become different
+        # bears -- with every page still serving, every smoke check still
+        # passing, and nothing at all to see on a fresh browser.
+        run: python scripts/brand-icon.py --check
+
       - name: PHP syntax check (lint)
         # Every file, not just changed ones: a partial that only one page
         # includes is otherwise never parsed until someone visits that page.
