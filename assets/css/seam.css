@@ -135,11 +135,11 @@
   --thread: var(--ink);
 }
 
-/* .brand__patch is the same object cut square for the masthead. Its geometry
-   lives in nav.css; the stitch on it is THIS stitch, listed here rather than
-   retyped there — the two blocks were byte-identical copies of each other. */
-.patch::after,
-.brand__patch::after {
+/* The masthead mark used to be this same object cut square, and shared this
+   rule. It is now assets/brand/mark.svg, which draws its own seam — an SVG
+   loaded through <img> has no CSS to inherit, so a ::after here would never
+   have reached it. Only the headline patch is left. */
+.patch::after {
   content: "";
   position: absolute;
   inset: 4px;

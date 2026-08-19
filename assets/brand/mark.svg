@@ -1,23 +1,47 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="SLAP Baby Designs">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 140" role="img" aria-label="SLAP Baby Designs">
   <title>SLAP Baby Designs</title>
 
-  <!-- A fabric patch: gold ground, hand-stitched edge, one letter. Three shapes
-       and nothing else, because this is used at 16x16 in a browser tab where a
-       fourth shape becomes a smudge. -->
-  <rect width="64" height="64" rx="13" fill="#FFC93C"/>
+  <!-- The bear from assets/SLAP Logo.dc.html, kept on that sketch's 140-unit
+       grid so the two files can be read against each other number for number.
 
-  <!-- The running stitch is a stroked rect with a dash array, NOT a dashed
-       border: an SVG has no CSS to inherit in a favicon context, and a dashed
-       CSS border would not render at all when the file is loaded as an icon.
-       Round caps make each dash read as a stitch rather than a tick. -->
-  <rect x="7" y="7" width="50" height="50" rx="8"
-        fill="none" stroke="#2B2440" stroke-width="3.2"
-        stroke-dasharray="7 5.5" stroke-linecap="round"/>
+       Two things in the sketch are deliberately not here. The inner-ear
+       highlights are hairlines that collapse into grey mush at the 16x16 this
+       file is served at in a browser tab. The wordmark is <text> set in Baloo 2,
+       and a webfont cannot load in a favicon — that lockup would be substituted
+       differently on every machine, so the logo would change shape per visitor.
+       The wordmark is real HTML text in the masthead (partials/header.php) and
+       is never part of this file. -->
 
-  <!-- The S is a path, not <text>. A webfont cannot load in a favicon and even a
-       system font would be substituted differently on every OS, so the mark
-       would change shape per visitor. A stroked path is identical everywhere. -->
-  <path d="M39.5 24.5C39.5 19.5 24.5 18.5 24.5 25.5C24.5 31.5 39.5 31 39.5 38.5C39.5 46 24.5 45.5 24.5 40.5"
-        fill="none" stroke="#2B2440" stroke-width="6.5"
-        stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Full bleed, and the bear drawn larger against it than in the sketch. At
+       16px a 6-unit margin is most of a pixel of nothing, and every unit the
+       tile gives back is a unit of eye, muzzle and ear. -->
+  <rect width="140" height="140" rx="38" fill="#FFC93C"/>
+
+  <!-- Ears before the head, so the head circle covers the overlap and the join
+       needs no path of its own. -->
+  <circle cx="44" cy="42" r="19" fill="#FF6B6B"/>
+  <circle cx="96" cy="42" r="19" fill="#FF6B6B"/>
+
+  <circle cx="70" cy="78" r="46" fill="#2B2440"/>
+
+  <!-- The seam, and the reason this reads as a SLAP bear rather than any bear:
+       the same running stitch as .patch and .seam-top in assets/css/seam.css.
+       A unit heavier than the sketch, because at 16px it is already only half a
+       pixel wide. Round caps so each dash reads as a stitch rather than a tick,
+       and the curve stops short of the head edge so those caps stay on the ink. -->
+  <path d="M32 58 q38 -22 76 0" fill="none" stroke="#FFC93C" stroke-width="5.5"
+        stroke-linecap="round" stroke-dasharray="12 11"/>
+
+  <circle cx="52" cy="68" r="7" fill="#FFF8EE"/>
+  <circle cx="88" cy="68" r="7" fill="#FFF8EE"/>
+
+  <ellipse cx="70" cy="97" rx="23" ry="17" fill="#FFF8EE"/>
+
+  <!-- Nose wider than it is tall, and the mouth kept even though it is fine at
+       16px. Without them the muzzle is a cream oval with a dot in it, which the
+       eye reads as a third eye rather than a snout — the one reading this mark
+       cannot afford. -->
+  <ellipse cx="70" cy="90" rx="8.5" ry="6.5" fill="#2B2440"/>
+  <path d="M70 96 v5 M70 101 q-6.5 5 -11 0.5 M70 101 q6.5 5 11 0.5"
+        fill="none" stroke="#2B2440" stroke-width="4" stroke-linecap="round"/>
 </svg>

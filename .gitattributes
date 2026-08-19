@@ -13,6 +13,9 @@
 #              endings between two checkouts would produce two different hashes
 #              for identical CSS, so the cache-busting URL would change on a
 #              deploy that changed nothing.
+#
+# The rest are pinned for uniformity rather than because a CR would break them:
+# nothing in a checkout should depend on which machine made it.
 
 *.sh          text eol=lf
 *.php         text eol=lf
@@ -23,6 +26,8 @@
 *.yml         text eol=lf
 *.json        text eol=lf
 *.svg         text eol=lf
+*.html        text eol=lf
+*.py          text eol=lf
 *.txt         text eol=lf
 *.webmanifest text eol=lf
 .htaccess     text eol=lf

@@ -55,23 +55,16 @@
   color: var(--ink);
 }
 
-/* The same scrap of gold fabric as the headline patch, cut square and carrying
-   the S. Geometry only: the stitch on it is drawn by the .brand__patch::after
-   half of the .patch::after rule in seam.css, so there is one definition of the
-   patch seam and not two. */
-.brand__patch {
-  position: relative;
-  display: grid;
-  place-items: center;
-  inline-size: 2.5rem;
-  block-size: 2.5rem;
-  border-radius: var(--radius-sm);
-  background: var(--gold);
-  color: var(--ink);
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: 1.25rem;
-  line-height: 1;
+/* assets/brand/mark.svg, the same file the tab icon loads. Everything visible
+   — the gold ground, its corner radius, the stitched seam — is inside the SVG,
+   so there is nothing to style here but the box it occupies.
+
+   2.75rem matches the min-block-size above, so the mark fills the link's thumb
+   target exactly and the masthead is no taller than it was. The tilt is the one
+   thing kept from the patch this replaced: sewn on by hand, slightly askew. */
+.brand__mark {
+  inline-size: 2.75rem;
+  block-size: 2.75rem;
   rotate: -3deg;
   flex: none;
 }
