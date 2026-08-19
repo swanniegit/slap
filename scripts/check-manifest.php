@@ -165,6 +165,49 @@ foreach ($walker as $info) {
     }
 }
 
+// --- 'updated' must exist and be parseable -----------------------------------
+// privacy/index.php renders it as a date, seo.php puts it in the JSON-LD and
+// sitemap.php emits it as <lastmod>. strtotime() returns false on a bad value,
+// and false into date() under strict_types is a TypeError — a blank 500 with
+// display_errors off. Google also silently drops a sitemap entry whose lastmod
+// is not a valid W3C date, which is invisible until traffic does not arrive.
+foreach ($pages as $path => $p) {
+    if (!isset($p['updated'])) {
+        $problems[] = "$path has no 'updated' date";
+        continue;
+    }
+    if (!is_string($p['updated']) || strtotime($p['updated']) === false) {
+        $problems[] = "$path has an unparseable 'updated': " . var_export($p['updated'], true);
+        continue;
+    }
+    if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $p['updated'])) {
+        $problems[] = "$path 'updated' must be YYYY-MM-DD, got: {$p['updated']}";
+    }
+}
+
+// --- 'footer' must be a real boolean flag ------------------------------------
+// It is read as !empty($p['footer']) by slap_footer_links(), so a misspelled key
+// fails silently: the link simply never appears, and the only symptom is a
+// privacy notice with no route to it from anywhere on the site.
+$knownKeys = ['file', 'title', 'description', 'short_label', 'robots', 'og_image',
+              'og_image_alt', 'parent', 'nav', 'footer', 'sitemap', 'updated',
+              'path', 'canonical'];
+foreach ($pages as $path => $p) {
+    if (array_key_exists('footer', $p) && !is_bool($p['footer'])) {
+        $problems[] = "$path 'footer' must be true or false, got: " . var_export($p['footer'], true);
+    }
+    foreach (array_keys($p) as $key) {
+        if (!in_array($key, $knownKeys, true)) {
+            $problems[] = "$path has unknown manifest key '$key' — typo, or add it to \$knownKeys";
+        }
+    }
+}
+
+// --- at least one page must reach the footer ---------------------------------
+if (array_filter($pages, static fn(array $p): bool => !empty($p['footer'])) === []) {
+    $problems[] = "no page is marked 'footer' — the privacy notice would be unreachable";
+}
+
 // ---------------------------------------------------------------------------
 foreach ($problems as $problem) {
     fwrite(STDERR, "  ERROR: $problem\n");

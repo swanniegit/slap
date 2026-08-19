@@ -16,12 +16,18 @@ declare(strict_types=1);
  * Every field, once. partials/enquiry-form.php renders this and
  * slap_enquiry_validate() checks it, so a field cannot exist in the form
  * without being validated, or be validated without appearing in the form.
+ *
+ * 'label' is what the form control says; 'discloses' is what the privacy page
+ * calls it. They are different jobs: a label is a prompt ("Tell us about it")
+ * while a disclosure has to name a category of personal information. Reusing
+ * the label made the privacy page list two questions instead of two things.
  */
 function slap_enquiry_fields(): array
 {
     return [
         'name' => [
             'label'        => 'Your name',
+            'discloses'    => 'Your name',
             'type'         => 'text',
             'required'     => true,
             'autocomplete' => 'name',
@@ -29,6 +35,7 @@ function slap_enquiry_fields(): array
         ],
         'email' => [
             'label'        => 'Email',
+            'discloses'    => 'Your email address',
             'type'         => 'email',
             'required'     => true,
             'autocomplete' => 'email',
@@ -36,6 +43,7 @@ function slap_enquiry_fields(): array
         ],
         'whatsapp' => [
             'label'        => 'WhatsApp number',
+            'discloses'    => 'Your WhatsApp number',
             'type'         => 'tel',
             'required'     => false,
             'autocomplete' => 'tel',
@@ -43,7 +51,8 @@ function slap_enquiry_fields(): array
             'max'          => 30,
         ],
         'kind' => [
-            'label'    => 'What would you like made?',
+            'label'     => 'What would you like made?',
+            'discloses' => 'Which kind of bear you are asking about',
             'type'     => 'radio',
             'required' => true,
             'default'  => 'memory',
@@ -54,7 +63,8 @@ function slap_enquiry_fields(): array
             ],
         ],
         'message' => [
-            'label'    => 'Tell us about it',
+            'label'     => 'Tell us about it',
+            'discloses' => 'Whatever you write in the message box',
             'type'     => 'textarea',
             'required' => true,
             'rows'     => 6,

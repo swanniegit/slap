@@ -46,15 +46,31 @@ function slap_is_current(string $path): bool
 function slap_footer_links(): array
 {
     $pages = slap_pages();
-    $links = [['path' => '/', 'label' => slap_short_label($pages['/'])]];
+    $links = [];
+
+    // Home first. Taken from the manifest entry rather than typed as '/',
+    // because lib/pages.php's whole invariant is that the key is the only place
+    // a URL is written. Guarded: if the home entry is ever rekeyed, an
+    // unguarded lookup would pass null into slap_short_label(array) and fatal
+    // the footer of EVERY page, not just this one.
+    if (isset($pages['/'])) {
+        $links[] = ['path' => $pages['/']['path'], 'label' => slap_short_label($pages['/'])];
+    }
 
     foreach (slap_nav_items() as $item) {
         $links[] = ['path' => $item['path'], 'label' => $item['label']];
     }
-    foreach ($pages as $path => $p) {
+    foreach ($pages as $p) {
         if (!empty($p['footer'])) {
-            $links[] = ['path' => $path, 'label' => slap_short_label($p)];
+            $links[] = ['path' => $p['path'], 'label' => slap_short_label($p)];
         }
     }
-    return $links;
+
+    // A page marked both 'nav' and 'footer' would otherwise be listed twice.
+    // Keyed by path so the first label wins, which is the masthead's.
+    $unique = [];
+    foreach ($links as $link) {
+        $unique[$link['path']] ??= $link;
+    }
+    return array_values($unique);
 }

@@ -82,11 +82,32 @@ status /scripts/smoke.sh   403,404 "scripts/ must not be in the image"
 status /vendor/autoload.php 403,404 "vendor/ must not be browsable"
 
 echo "> Pages serve"
-status /                        200 "home"
-status /gallery/                200 "gallery"
+# Derived from the sitemap, which lib/pages.php generates, rather than typed out
+# here. A hand-kept list is a second copy of the manifest, and the copy is what
+# goes stale: /privacy/ shipped without a single smoke check because nobody
+# remembered to add a line to this file. Now a page cannot exist without being
+# tested, and a page that vanishes from the sitemap fails the count check below.
+sitemap_urls=$(curl -s --max-time 20 "$BASE/sitemap.xml"     | grep -o '<loc>[^<]*</loc>' | sed 's|</\?loc>||g')
+
+if [[ -z "$sitemap_urls" ]]; then
+    fail "sitemap.xml yielded no URLs — cannot derive the page list"
+else
+    n=0
+    while read -r url; do
+        [[ -z "$url" ]] && continue
+        n=$((n+1))
+        # The sitemap carries absolute production URLs; test them against
+        # whatever host this run targets.
+        path="/${url#*://*/}"
+        status "$path" 200 "sitemap page $path"
+    done <<< "$sitemap_urls"
+    if [[ "$n" -ge 4 ]]; then pass "sitemap lists $n pages (>=4)"
+    else fail "sitemap lists only $n pages — expected at least 4"; fi
+fi
+
+# Query-string variants are not sitemap entries, so they stay explicit.
 status /gallery/?made=character 200 "gallery filtered to character bears"
 status /gallery/?made=kit       200 "gallery filtered to supporters' kit"
-status /enquiry/                200 "enquiry"
 
 echo "> 404 handling"
 # ErrorDocument must reach 404.php. Apache's own error page would be a 404 with
@@ -136,10 +157,14 @@ header / X-Content-Type-Options nosniff
 header / Referrer-Policy        strict-origin
 
 echo "> No leaked PHP diagnostics"
-no_php_noise "/"          "$home"
-no_php_noise "/gallery/"  "$(curl -s --max-time 15 "$BASE/gallery/")"
-no_php_noise "/enquiry/"  "$(curl -s --max-time 15 "$BASE/enquiry/")"
-no_php_noise "/404"       "$(curl -s --max-time 15 "$BASE/no-such-page-here")"
+no_php_noise "/"    "$home"
+while read -r url; do
+    [[ -z "$url" ]] && continue
+    path="/${url#*://*/}"
+    [[ "$path" == "/" ]] && continue
+    no_php_noise "$path" "$(curl -s --max-time 15 "$BASE$path")"
+done <<< "$sitemap_urls"
+no_php_noise "/404" "$(curl -s --max-time 15 "$BASE/no-such-page-here")"
 
 echo "> Enquiry form contract"
 form=$(curl -s --max-time 15 "$BASE/enquiry/")
