@@ -122,6 +122,26 @@ header /robots.txt       Content-Type text/plain
 status /sitemap.xml      200 "sitemap.xml (rewritten to sitemap.php)"
 header /sitemap.xml      Content-Type xml
 contains /sitemap.xml    "<loc>" "sitemap.xml lists at least one URL"
+# Each generated file answers on its own .php name too, so without this it
+# serves identical bytes at two URLs and a crawler that finds the .php form
+# indexes it as a second page. The redirect has to fire ONLY for requests from
+# outside -- if it caught the internal rewrite as well, the pretty URL would
+# loop, which is why the pretty ones are re-checked for zero redirects below.
+for pair in "sitemap.php:/sitemap.xml" "robots.php:/robots.txt" "site-webmanifest.php:/site.webmanifest"; do
+    src_php="/${pair%%:*}" want="${pair##*:}"
+    read -r code location < <(curl -s -o /dev/null --max-time 15         -w '%{http_code} %{redirect_url}' "$BASE$src_php")
+    if [[ "$code" == "301" && "$location" == *"$want" ]]; then
+        pass "$src_php redirects to $want"
+    else
+        fail "$src_php -> $code $location, wanted 301 to $want"
+    fi
+done
+
+for pretty in /sitemap.xml /robots.txt /site.webmanifest; do
+    hops=$(curl -s -o /dev/null -L --max-redirs 5 --max-time 15 -w '%{num_redirects}' "$BASE$pretty")
+    [[ "$hops" == "0" ]] && pass "$pretty is served directly, not via a redirect"                          || fail "$pretty took $hops redirect(s) -- the canonical rules are looping"
+done
+
 header /site.webmanifest Content-Type manifest+json
 status /site.webmanifest 200 "site.webmanifest"
 
