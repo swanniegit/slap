@@ -60,6 +60,22 @@ RewriteRule ^assets/site\.([a-f0-9]+)\.css$ assets/css.php?v=$1 [L,QSA]
 # The unhashed path keeps working — site.webmanifest uses it.
 RewriteRule ^assets/brand/([a-z0-9-]+)\.[a-f0-9]{8,32}\.(svg|png)$ assets/brand/$1.$2 [L]
 
+# ---- One URL per generated file --------------------------------------------
+# sitemap.php, robots.php and site-webmanifest.php answer on their own names as
+# well as their pretty ones, so each of them served identical bytes at two URLs
+# and a crawler that found the .php form would index it as a second page.
+#
+# REDIRECT_STATUS is empty only on a request that arrived from outside; the
+# internal rewrites below set it, so this cannot catch them and cannot loop.
+# 301 rather than 403: these are real, useful documents, and the point is to
+# name the one address for each, not to hide them.
+RewriteCond %{ENV:REDIRECT_STATUS} ^$
+RewriteRule ^sitemap\.php$ /sitemap.xml [R=301,L]
+RewriteCond %{ENV:REDIRECT_STATUS} ^$
+RewriteRule ^robots\.php$ /robots.txt [R=301,L]
+RewriteCond %{ENV:REDIRECT_STATUS} ^$
+RewriteRule ^site-webmanifest\.php$ /site.webmanifest [R=301,L]
+
 # ---- Generated sitemap -----------------------------------------------------
 # Built from lib/pages.php so lastmod cannot drift from the manifest. A static
 # sitemap.xml with stale dates teaches Google to discount the signal.
