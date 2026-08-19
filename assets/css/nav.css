@@ -43,14 +43,30 @@
 
 /* --- Brand --------------------------------------------------------------- */
 
-/* The 2.5rem patch sets the height, which lands the link at 40px — 4px under a
-   thumb target. The floor is on the link, not the patch, so the mark keeps its
-   size and only the hit area grows. */
+/* The lockup from assets/SLAP Logo.dc.html: the mark on the left, the wordmark
+   stacked beside it over three lines.
+
+   --brand-lead is the only size written down. The other two lines and the mark
+   are computed from it, so the lockup scales as one object and cannot end up a
+   24px SLAP over a tagline someone forgot to shrink with it. It also gives the
+   whole thing one knob for the narrow end, which is the only place this lockup
+   is at risk: it is three times as wide as the single line it replaced, and it
+   shares a row with the menu button on a 320px phone.
+
+   The sketch sets the three lines at 52 / 24 / 11 — a ratio of 1 : 0.46 : 0.21.
+   That ratio cannot come across intact: scaled until the 11 is legible it puts
+   SLAP at 54px and the masthead at 100px tall. So what is kept is the
+   hierarchy — same order, same weights, same colour steps — and the ratio is
+   compressed to 1 : 0.66 : 0.44. */
 .brand {
+  --brand-lead: clamp(1.15rem, 0.85rem + 1.1vw, 1.5rem);
+
   display: inline-flex;
   align-items: center;
+  /* Still a floor, even though three stacked lines clear it on their own: it is
+     what keeps the link a thumb target if the wordmark is ever shortened. */
   min-block-size: 2.75rem;
-  gap: 0.75rem;
+  gap: 0.65rem;
   text-decoration: none;
   color: var(--ink);
 }
@@ -59,32 +75,54 @@
    — the gold ground, its corner radius, the stitched seam — is inside the SVG,
    so there is nothing to style here but the box it occupies.
 
-   2.75rem matches the min-block-size above, so the mark fills the link's thumb
-   target exactly and the masthead is no taller than it was. The tilt is the one
-   thing kept from the patch this replaced: sewn on by hand, slightly askew. */
+   2.2x the lead line is the sketch's proportion: there the mark stands exactly
+   as tall as the three lines of wordmark beside it. At the small end of the
+   clamp that lands on 40px, which is why the floor above is still on the link.
+   The tilt is the one thing kept from the patch this replaced: sewn on by hand,
+   slightly askew. */
 .brand__mark {
-  inline-size: 2.75rem;
-  block-size: 2.75rem;
+  inline-size: calc(var(--brand-lead) * 2.2);
+  block-size: calc(var(--brand-lead) * 2.2);
   rotate: -3deg;
   flex: none;
 }
 
+/* Tight leading and a hair of gap rather than the other way around: the three
+   lines have to read as one object, and default leading on a display face at
+   these sizes opens gaps wide enough to read as three separate things. */
 .brand__names {
   display: grid;
+  gap: 0.1em;
 }
 
-.brand__name {
+.brand__lead {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: 1.125rem;
-  line-height: 1.1;
+  font-size: var(--brand-lead);
+  line-height: 1;
   letter-spacing: -0.02em;
 }
 
+/* --coral-ink, not --coral. The sketch sets this line in #FF6B6B, which is
+   2.6:1 on --paper: fine for a 24px word in a 260px logo, under AA the moment
+   it is 16px text in a masthead. tokens.css already keeps the same coral taken
+   down to 6.5:1 for exactly this. */
+.brand__rest {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: calc(var(--brand-lead) * 0.66);
+  line-height: 1.05;
+  color: var(--coral-ink);
+}
+
+/* max() rather than the bare calc: below about 10px the tracking stops reading
+   as a tracked label and starts reading as a smudge, and this line is the one
+   that would hit it first as the clamp comes down. */
 .brand__tagline {
-  font-size: var(--label-size);
+  font-size: max(0.6rem, calc(var(--brand-lead) * 0.44));
   font-weight: var(--label-weight);
   letter-spacing: var(--label-track);
+  line-height: 1.2;
   text-transform: uppercase;
   color: var(--ink-soft);
 }
