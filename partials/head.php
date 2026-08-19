@@ -14,7 +14,7 @@ $ogImage = slap_abs($p['og_image']);
 
 slap_send_security_headers();
 ?><!doctype html>
-<html lang="en-ZA">
+<html lang="<?= slap_e(SLAP_ORG['locale']) ?>">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -35,7 +35,7 @@ slap_send_security_headers();
 <meta property="og:image:width" content="<?= (int)$ogW ?>">
 <meta property="og:image:height" content="<?= (int)$ogH ?>">
 <meta property="og:image:alt" content="<?= slap_e($p['og_image_alt'] ?? $p['title']) ?>">
-<meta property="og:locale" content="en_ZA">
+<meta property="og:locale" content="<?= slap_e(slap_og_locale()) ?>">
 <meta property="og:site_name" content="<?= slap_e(SLAP_ORG['name']) ?>">
 
 <meta name="twitter:card" content="summary_large_image">
@@ -44,7 +44,10 @@ slap_send_security_headers();
 <meta name="twitter:image" content="<?= slap_e($ogImage) ?>">
 <meta name="twitter:image:alt" content="<?= slap_e($p['og_image_alt'] ?? $p['title']) ?>">
 
-<meta name="theme-color" content="#FFF8EE">
+<?php /* --paper, read from tokens.css rather than typed: this is the
+         browser chrome behind the page, and the two silently drifting apart
+         is the exact failure it is easiest not to notice. */ ?>
+<meta name="theme-color" content="<?= slap_e(slap_css_token('paper')) ?>">
 <?php /* Hashed, not the plain path. Both resolve to the same file on disk, but
          only the hashed one changes when the mark is redrawn, and a favicon
          cached under a fixed URL is a logo you cannot take back. */ ?>

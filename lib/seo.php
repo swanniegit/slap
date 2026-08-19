@@ -94,7 +94,7 @@ function slap_schema_graph(array $p): array
             'telephone'   => $o['phone'] ?: null,
             'sameAs'      => $sameAs ?: null,
             'areaServed'  => ['@type' => 'Country', 'name' => $o['region']],
-            'description' => 'Handmade keepsake bears sewn from clothes that already mean something.',
+            'description' => $o['description'],
         ]),
         [
             '@type'      => 'WebSite',
@@ -102,7 +102,7 @@ function slap_schema_graph(array $p): array
             'url'        => slap_abs('/'),
             'name'       => $o['name'],
             'publisher'  => ['@id' => $org],
-            'inLanguage' => 'en-ZA',
+            'inLanguage' => $o['locale'],
         ],
         [
             '@type'       => 'WebPage',

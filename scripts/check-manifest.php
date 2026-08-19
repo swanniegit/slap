@@ -26,7 +26,8 @@ const CHECK_SKIP_DIRS  = ['lib', 'partials', 'scripts', 'vendor', 'data', 'node_
  * asset endpoint reached through a rewrite; sitemap.php generates sitemap.xml
  * and is itself never a page a person lands on.
  */
-const CHECK_SKIP_FILES = ['assets/css.php', 'sitemap.php'];
+const CHECK_SKIP_FILES = ['assets/css.php', 'sitemap.php', 'robots.php',
+                          'site-webmanifest.php'];
 
 $problems = [];
 $pages    = slap_pages();
