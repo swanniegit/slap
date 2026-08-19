@@ -36,12 +36,18 @@ const SLAP_ORG = [
     'region'    => 'South Africa',
     'languages' => ['en', 'af'],
 
-    // TODO(slap): supply. Empty values are rendered as nothing, never as a
-    // fake link — a dead "WhatsApp" in the footer costs more than an absent one.
-    'email'         => '',
-    'phone'         => '',           // E.164, e.g. +27821234567
-    'phone_display' => '',           // e.g. 082 123 4567
-    'whatsapp'      => '',           // https://wa.me/27821234567
+    // Empty values are rendered as nothing, never as a fake link — a dead
+    // "WhatsApp" in the footer costs more than an absent one.
+    'email'         => 'nicolened67@gmail.com',
+    'phone'         => '+27823817357',    // E.164, for tel: and JSON-LD telephone
+    'phone_display' => '082 381 7357',    // as it is written locally
+
+    // TODO(slap): supply. The number above is a mobile and is probably on
+    // WhatsApp, but "probably" is how a dead link ships — this stays empty
+    // until someone confirms it, because filling it in turns on a WhatsApp
+    // link in the footer AND the "rather send photos on WhatsApp?" line under
+    // the enquiry form. Value is https://wa.me/27823817357.
+    'whatsapp'      => '',
     'facebook'      => '',
     'instagram'     => '',
 ];
