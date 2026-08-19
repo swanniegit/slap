@@ -45,8 +45,11 @@ slap_send_security_headers();
 <meta name="twitter:image:alt" content="<?= slap_e($p['og_image_alt'] ?? $p['title']) ?>">
 
 <meta name="theme-color" content="#FFF8EE">
-<link rel="icon" href="/assets/brand/mark.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
+<?php /* Hashed, not the plain path. Both resolve to the same file on disk, but
+         only the hashed one changes when the mark is redrawn, and a favicon
+         cached under a fixed URL is a logo you cannot take back. */ ?>
+<link rel="icon" href="<?= slap_e(slap_brand_url('mark.svg')) ?>" type="image/svg+xml">
+<link rel="apple-touch-icon" href="<?= slap_e(slap_brand_url('apple-touch-icon.png')) ?>">
 <link rel="manifest" href="/site.webmanifest">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">

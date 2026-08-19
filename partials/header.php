@@ -21,7 +21,7 @@ require SLAP_ROOT . '/partials/head.php';
                usually in cache before the masthead paints. alt="" because the
                brand name follows it as text, and a screen reader announcing
                "SLAP Baby Designs SLAP Baby Designs" is worse than silence. */ ?>
-      <img class="brand__mark" src="/assets/brand/mark.svg" alt=""
+      <img class="brand__mark" src="<?= slap_e(slap_brand_url('mark.svg')) ?>" alt=""
            width="44" height="44" decoding="async">
       <?php $wordmark = slap_wordmark(); ?>
       <span class="brand__names">

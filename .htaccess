@@ -51,6 +51,15 @@ RewriteRule \.dc\.html$ - [F,L]
 # reject a stale one rather than serve mismatched bytes under a cached URL.
 RewriteRule ^assets/site\.([a-f0-9]+)\.css$ assets/css.php?v=$1 [L,QSA]
 
+# ---- Hashed brand assets ---------------------------------------------------
+# lib/html.php's slap_brand_url() stamps the mark and the touch icon with a hash
+# of their contents, and this strips it back off so Apache still serves the file
+# from disk with no PHP in the request. Unlike the stylesheet there is no
+# endpoint to hand a wrong hash to: any hash resolves to the current file, which
+# is right, because the URL is only ever generated FROM that file's bytes.
+# The unhashed path keeps working — site.webmanifest uses it.
+RewriteRule ^assets/brand/([a-z0-9-]+)\.[a-f0-9]{8,32}\.(svg|png)$ assets/brand/$1.$2 [L]
+
 # ---- Generated sitemap -----------------------------------------------------
 # Built from lib/pages.php so lastmod cannot drift from the manifest. A static
 # sitemap.xml with stale dates teaches Google to discount the signal.
@@ -101,10 +110,25 @@ ErrorDocument 404 /404.php
     # the other direction. A day is the staleness window for a mark that changes
     # about never; Expires has to be unset too, or mod_expires' own year-long
     # header from the block above outlives this one.
-    <If "%{REQUEST_URI} =~ m#^/assets/brand/#">
+    # A hashed brand URL is safe to keep forever — that is the whole point of
+    # putting the hash there, and it is what finally reaches a browser still
+    # holding the old mark under the plain path. The plain path itself keeps the
+    # short window: it is a fixed URL whose contents change, so it can never
+    # honestly promise more than a day.
+    # THE_REQUEST, not REQUEST_URI. By the time mod_headers runs, mod_rewrite has
+    # already stripped the hash back off and REQUEST_URI reads
+    # /assets/brand/mark.svg for both forms — so matching on it silently put the
+    # hashed URL in the short-lived branch, which is the one thing this pair of
+    # rules exists to prevent. THE_REQUEST is the original request line and is
+    # never rewritten. Matched loosely at both ends because it also carries the
+    # method and the protocol: "GET /... HTTP/1.1".
+    <If "%{THE_REQUEST} =~ m# /assets/brand/[a-z0-9-]+\.[a-f0-9]{8,32}\.(svg|png)[ ?]#">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </If>
+    <ElseIf "%{REQUEST_URI} =~ m#^/assets/brand/#">
         Header set Cache-Control "public, max-age=86400"
         Header unset Expires
-    </If>
+    </ElseIf>
 
     # NOT immutable. Unlike the stylesheet, /assets/js/site.js is served at a
     # fixed URL with no content hash in it, so "immutable" would mean a fix to
