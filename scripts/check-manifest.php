@@ -208,6 +208,55 @@ if (array_filter($pages, static fn(array $p): bool => !empty($p['footer'])) === 
     $problems[] = "no page is marked 'footer' — the privacy notice would be unreachable";
 }
 
+// --- contact details must be well formed, and unfilled ones must be visible --
+// lib/config.php used to claim this file "can fail CI while any of them are
+// still empty in a production build". It did not: nothing here referenced
+// SLAP_ORG at all. A comment describing a gate that does not exist is worse
+// than no comment, because the next person trusts it.
+//
+// So this is the gate, and it draws the line where the line can honestly be
+// drawn. EMPTY is a business fact — SLAP has not opened a Facebook page — and
+// every consumer already degrades gracefully: partials/footer.php filters out
+// falsy channels, lib/seo.php filters sameAs. Failing on empty would red every
+// push until someone signs up for something. MALFORMED is a defect: a number
+// that is not E.164 makes a tel: link that silently does nothing, and a wa.me
+// URL of the wrong shape is precisely the dead WhatsApp link lib/config.php
+// warns about. That fails.
+$contactRules = [
+    'email'     => [FILTER_VALIDATE_EMAIL, 'an email address'],
+    'phone'     => ['/^\+[1-9]\d{7,14}$/', 'E.164, e.g. +27821234567'],
+    'whatsapp'  => ['#^https://wa\.me/[1-9]\d{7,14}$#', 'https://wa.me/27821234567'],
+    'facebook'  => [FILTER_VALIDATE_URL, 'a full https:// URL'],
+    'instagram' => [FILTER_VALIDATE_URL, 'a full https:// URL'],
+];
+
+$unfilled = [];
+foreach ($contactRules as $key => [$rule, $shape]) {
+    $value = SLAP_ORG[$key];
+    if ($value === '') {
+        $unfilled[] = $key;
+        continue;
+    }
+    $ok = is_int($rule)
+        ? filter_var($value, $rule) !== false
+        : preg_match($rule, $value) === 1;
+    if (!$ok) {
+        $problems[] = "SLAP_ORG['$key'] is not $shape: " . var_export($value, true);
+    }
+}
+
+// The phone is declared twice: once machine-readable, once as a person writes
+// it. partials/footer.php prints one and dials the other, so if they drift the
+// footer shows a number that is not the number it calls.
+if (SLAP_ORG['phone'] !== '' && SLAP_ORG['phone_display'] !== '') {
+    $digits = static fn(string $s): string => preg_replace('/\D/', '', $s);
+    $local  = ltrim($digits(SLAP_ORG['phone_display']), '0');
+    if ($local === '' || !str_ends_with($digits(SLAP_ORG['phone']), $local)) {
+        $problems[] = sprintf("SLAP_ORG['phone_display'] (%s) is not the same number as ['phone'] (%s)",
+            SLAP_ORG['phone_display'], SLAP_ORG['phone']);
+    }
+}
+
 // ---------------------------------------------------------------------------
 foreach ($problems as $problem) {
     fwrite(STDERR, "  ERROR: $problem\n");
@@ -216,6 +265,12 @@ foreach ($problems as $problem) {
 if ($problems === []) {
     printf("manifest OK — %d pages, %d in the sitemap, %d stylesheet parts\n",
         count($pages), count(slap_sitemap_entries()), count(slap_css_parts()));
+    if ($unfilled !== []) {
+        // Printed, not failed: see the contact block above. It is here so that
+        // "still not supplied" shows up on every CI run, rather than resting in
+        // a TODO comment nobody opens.
+        printf("  awaiting SLAP: %s\n", implode(', ', $unfilled));
+    }
     exit(0);
 }
 

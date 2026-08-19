@@ -8,8 +8,13 @@
  *
  * TODO markers are facts SLAP still has to supply. They are constants rather
  * than inline placeholders so that filling them in is one edit, and so that
- * scripts/check-manifest.php can fail CI while any of them are still empty in a
- * production build.
+ * scripts/check-manifest.php can see them.
+ *
+ * What that check does, precisely, because this comment used to promise more
+ * than the code delivered: a MALFORMED contact detail fails CI, an EMPTY one is
+ * listed on stdout as "awaiting SLAP" and passes. Empty is a fact about the
+ * business, and every consumer already renders nothing rather than a dead link.
+ * Malformed is a defect that reaches a visitor as a link that does nothing.
  */
 declare(strict_types=1);
 
