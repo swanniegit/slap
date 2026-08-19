@@ -189,9 +189,35 @@ else
     fi
 fi
 
+echo "> Fonts and third parties"
+# /privacy/ tells visitors that nothing follows them between pages. That is a
+# claim about what the HTML references, so it is asserted here rather than
+# trusted: the fonts came from fonts.googleapis.com until they were brought
+# in-house, and putting a CDN link back would quietly make the privacy notice
+# false again without breaking anything a person would notice.
+for asset in /assets/fonts/karla-latin.woff2 /assets/fonts/baloo2-latin.woff2; do
+    status "$asset" 200 "font $asset"
+    header "$asset" Cache-Control immutable
+done
+
+third_party=$(printf '%s' "$home" | grep -o 'https://[a-z0-9.-]*' | sort -u               | grep -v 'schema\.org' | grep -v 'slapbabydesigns\.co\.za' || true)
+if [[ -z "$third_party" ]]; then
+    pass "homepage references no third-party host"
+else
+    fail "homepage references third-party host(s): $(printf '%s' "$third_party" | tr '
+' ' ')"
+fi
+
 echo "> Headers"
 header / X-Content-Type-Options nosniff
 header / Referrer-Policy        strict-origin
+# Enforced, not Report-Only. The policy spent its life as Report-Only with no
+# report-uri, so nothing collected the violations it existed to gather. The
+# difference between the two header names is invisible on a working page, which
+# is exactly why it is pinned here.
+header / Content-Security-Policy "default-src 'self'"
+header / Content-Security-Policy "style-src 'self';"
+header / Content-Security-Policy "font-src 'self';"
 
 echo "> No leaked PHP diagnostics"
 no_php_noise "/"    "$home"
