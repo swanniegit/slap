@@ -55,4 +55,5 @@ slap_send_security_headers();
 <link rel="stylesheet" href="<?= slap_e(slap_css_url()) ?>">
 
 <?php require SLAP_ROOT . '/partials/schema.php'; ?>
+<?php require SLAP_ROOT . '/partials/analytics.php'; ?>
 </head>

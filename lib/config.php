@@ -60,11 +60,21 @@ const SLAP_ENQUIRY_LOG = '/data/enquiries.jsonl';
 const SLAP_MIN_FILL_SECONDS = 4;
 
 /**
- * Search Console ownership token, rendered as <meta name="google-site-verification">
- * by partials/head.php when it is not empty.
+ * Search Console verification, for a URL-PREFIX property only.
  *
- * There is deliberately no analytics ID beside it: assets/js/site.js carries no
- * analytics and nothing on the site reads one, so a constant for it would be a
- * setting that looks configurable and changes nothing.
+ * Deliberately empty: slapbabydesigns.co.za is registered in Search Console as a
+ * DOMAIN property, which verifies by a DNS TXT record at the registrar and never
+ * reads a meta tag. Leave it empty unless a URL-prefix property is added later —
+ * partials/head.php omits the tag entirely while it is blank.
  */
-const SLAP_GSC_TOKEN = '';   // TODO(slap): paste the Search Console token
+const SLAP_GSC_TOKEN = '';
+
+/**
+ * GA4 measurement ID, format G-XXXXXXXXXX.
+ *
+ * Empty ships NO analytics at all — partials/analytics.php returns before it
+ * emits anything. That is deliberate rather than lazy: a blank ID would still
+ * load gtag.js and set cookies on every visit while reporting to nowhere, which
+ * is all of the privacy cost and none of the data.
+ */
+const SLAP_GA4_ID = '';

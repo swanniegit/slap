@@ -35,11 +35,11 @@ function slap_send_security_headers(): void
 
     $csp = implode('; ', [
         "default-src 'self'",
-        "script-src 'self' 'nonce-" . slap_nonce() . "'",
+        "script-src 'self' 'nonce-" . slap_nonce() . "' https://www.googletagmanager.com",
         "style-src 'self' https://fonts.googleapis.com",
         "font-src 'self' https://fonts.gstatic.com",
-        "img-src 'self' data:",
-        "connect-src 'self'",
+        "img-src 'self' data: https://www.googletagmanager.com https://*.google-analytics.com",
+        "connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com",
         "base-uri 'self'",
         "form-action 'self'",
         "object-src 'none'",
