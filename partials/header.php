@@ -23,8 +23,12 @@ require SLAP_ROOT . '/partials/head.php';
                "SLAP Baby Designs SLAP Baby Designs" is worse than silence. */ ?>
       <img class="brand__mark" src="/assets/brand/mark.svg" alt=""
            width="44" height="44" decoding="async">
+      <?php $wordmark = slap_wordmark(); ?>
       <span class="brand__names">
-        <span class="brand__name"><?= slap_e(SLAP_ORG['name']) ?></span>
+        <span class="brand__lead"><?= slap_e($wordmark['lead']) ?></span>
+        <?php if ($wordmark['rest'] !== ''): ?>
+          <span class="brand__rest"><?= slap_e($wordmark['rest']) ?></span>
+        <?php endif; ?>
         <span class="brand__tagline"><?= slap_e(SLAP_ORG['tagline']) ?></span>
       </span>
     </a>

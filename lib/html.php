@@ -16,6 +16,23 @@ function slap_abs(string $path): string {
 }
 
 /**
+ * The wordmark split into the two lines the masthead lockup sets it on.
+ *
+ * Derived from SLAP_ORG['name'], not declared next to it. Two more constants
+ * holding 'SLAP' and 'Baby Designs' would be a second spelling of a fact
+ * lib/config.php already states, free to drift from it the moment either is
+ * edited — and the drift would show as a masthead that disagrees with the
+ * <title>, the footer and the JSON-LD.
+ *
+ * Split at the first space, so a one-word name yields an empty second line and
+ * partials/header.php renders a single line rather than an empty <span>.
+ */
+function slap_wordmark(): array {
+    [$lead, $rest] = array_pad(explode(' ', SLAP_ORG['name'], 2), 2, '');
+    return ['lead' => $lead, 'rest' => $rest];
+}
+
+/**
  * Cache-busting version for the stylesheet bundle.
  *
  * A content hash, NOT a hand-bumped constant and NOT filemtime(). A constant is
