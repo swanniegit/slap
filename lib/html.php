@@ -66,6 +66,7 @@ function slap_css_parts(): array {
     if ($parts !== null) return $parts;
 
     $order = [
+        'font',        // @font-face, before anything can ask for a family
         'tokens',      // custom properties only
         'base',        // element defaults
         'layout',      // wrap, band, grid, section rhythm

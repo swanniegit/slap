@@ -52,9 +52,16 @@ slap_send_security_headers();
 <link rel="apple-touch-icon" href="<?= slap_e(slap_brand_url('apple-touch-icon.png')) ?>">
 <link rel="manifest" href="/site.webmanifest">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&amp;family=Karla:wght@400;500;600;700&amp;display=swap">
+<?php /* The fonts are ours now, so there is nothing to preconnect to. They are
+         declared in assets/css/font.css, which the browser only discovers after
+         it has fetched and parsed the bundle — one round trip too late for the
+         two faces that draw the first screen. Preloading those two, and only
+         those two, buys that trip back. crossorigin is required even same-origin:
+         fonts are fetched in CORS mode, and without it the preload is discarded
+         and fetched a second time. The -ext files are deliberately absent — most
+         pages never touch a character in that range. */ ?>
+<link rel="preload" href="/assets/fonts/karla-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/baloo2-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="<?= slap_e(slap_css_url()) ?>">
 
 <?php require SLAP_ROOT . '/partials/schema.php'; ?>
