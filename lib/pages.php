@@ -65,6 +65,23 @@ return [
         'updated'     => '2026-08-19',
     ],
 
+    '/privacy/' => [
+        'file'        => 'privacy/index.php',
+        'title'       => 'Privacy | SLAP Baby Designs',
+        'description' => 'What SLAP Baby Designs does with the details you send through the enquiry form, how long they are kept, and how to have them deleted.',
+        'short_label' => 'Privacy',
+        'robots'      => 'index,follow',
+        'og_image'    => '/assets/img/bears/corduroy-pinafore.jpeg',
+        'og_image_alt'=> 'A brown corduroy teddy bear in a yellow pinafore',
+        'parent'      => '/',
+        'nav'         => null,
+        // Not in the masthead — it belongs at the bottom of the page, where
+        // people look for it. 'footer' is what puts it there; see lib/nav.php.
+        'footer'      => true,
+        'sitemap'     => ['changefreq' => 'yearly', 'priority' => 0.2],
+        'updated'     => '2026-08-19',
+    ],
+
     // Reached only by Apache's ErrorDocument, so it has no nav entry and must
     // never appear in the sitemap. It is in the manifest so that it still gets
     // a real <head> instead of the bare Apache page.

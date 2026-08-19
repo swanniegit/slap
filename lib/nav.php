@@ -33,3 +33,28 @@ function slap_is_current(string $path): bool
 {
     return (slap_current()['path'] ?? null) === $path;
 }
+
+/**
+ * Links for the footer: Home, then the masthead items, then anything the
+ * manifest marks 'footer' (the privacy page).
+ *
+ * Built here rather than typed into partials/footer.php so that adding a page
+ * is still a single manifest edit — the same promise the masthead nav makes.
+ * Home is included explicitly because the brand mark is its link in the
+ * masthead, so it has no 'nav' entry of its own.
+ */
+function slap_footer_links(): array
+{
+    $pages = slap_pages();
+    $links = [['path' => '/', 'label' => slap_short_label($pages['/'])]];
+
+    foreach (slap_nav_items() as $item) {
+        $links[] = ['path' => $item['path'], 'label' => $item['label']];
+    }
+    foreach ($pages as $path => $p) {
+        if (!empty($p['footer'])) {
+            $links[] = ['path' => $path, 'label' => slap_short_label($p)];
+        }
+    }
+    return $links;
+}

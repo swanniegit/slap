@@ -1,0 +1,64 @@
+/*
+ * prose.css — long-form running text.
+ *
+ * The only place on the site with more than a paragraph at a time, so it is the
+ * only place that needs rules for headings and lists inside flowing copy.
+ * Everything else is a component with its own spacing, which is why these are
+ * scoped under .prose rather than set on the bare elements: a bare `h2 + p`
+ * margin would fight every card and band on every other page.
+ *
+ * Spacing is set on the TOP of following elements only, never the bottom, so
+ * margins cannot collapse unpredictably against the band padding.
+ */
+
+.prose {
+  max-inline-size: var(--measure);
+  color: var(--ink-soft);
+}
+
+.prose h2 {
+  margin-block: clamp(2rem, 4vw, 2.75rem) var(--stack-tight);
+  font-family: var(--font-display, inherit);
+  font-size: clamp(1.375rem, 2.5vw, 1.75rem);
+  line-height: 1.15;
+  color: var(--ink);
+}
+
+/* The first heading sits directly under the page lead, which already carries
+   the space above it. */
+.prose > .wrap > h2:first-child,
+.prose h2:first-child {
+  margin-block-start: 0;
+}
+
+.prose p {
+  margin-block: 0 var(--stack-tight);
+  line-height: 1.7;
+}
+
+.prose ul {
+  margin-block: 0 var(--stack);
+  padding-inline-start: 1.25rem;
+  line-height: 1.7;
+}
+
+.prose li {
+  margin-block-end: 0.35rem;
+}
+
+/* A list marker in the page's own thread colour rather than the browser's grey
+   bullet — the one decorative touch, and it costs nothing. */
+.prose li::marker {
+  color: var(--tan);
+}
+
+.prose strong {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.prose a {
+  color: var(--link);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}

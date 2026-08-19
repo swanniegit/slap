@@ -61,6 +61,7 @@ function slap_css_parts(): array {
         'panel',       // the two-route panels
         'bear',        // gallery card + care label
         'form',
+        'prose',       // long-form running text, privacy page only so far
         'steps',       // the numbered list beside the enquiry form
         'footer',
     ];

@@ -37,13 +37,12 @@ $contact = array_values(array_filter([
     <nav class="footer__col" aria-label="Pages">
       <h2 class="label">Pages</h2>
       <ul class="footer__links">
-        <?php /* Home is not a masthead nav item — the brand mark is its link —
-                 so it is taken from the manifest directly rather than having
-                 its URL and its label typed out here. */ ?>
-        <?php $home = slap_pages()['/']; ?>
-        <li><a href="<?= slap_e($home['path']) ?>"><?= slap_e(slap_short_label($home)) ?></a></li>
-        <?php foreach (slap_nav_items() as $item): ?>
-          <li><a href="<?= slap_e($item['path']) ?>"><?= slap_e($item['label']) ?></a></li>
+        <?php /* Home and the privacy page are not masthead items — the brand
+                 mark links home, and privacy belongs at the bottom. Both come
+                 from the manifest via slap_footer_links(), so adding a page is
+                 still one manifest edit and nothing is typed twice. */ ?>
+        <?php foreach (slap_footer_links() as $link): ?>
+          <li><a href="<?= slap_e($link['path']) ?>"><?= slap_e($link['label']) ?></a></li>
         <?php endforeach; ?>
       </ul>
     </nav>
