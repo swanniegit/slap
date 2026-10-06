@@ -21,6 +21,7 @@ function slap_collections(): array
     return [
         'kit'       => 'Supporters’ kit',
         'nursery'   => 'Nursery fabric',
+        'clothes'   => 'Their clothes',
         'character' => 'Made new',
     ];
 }
@@ -117,6 +118,58 @@ function slap_bears(): array
             'label'      => [
                 ['Made new in', 'Brown cotton corduroy'],
                 ['Finished with', 'Yellow pinafore, hessian hat and heart'],
+            ],
+        ],
+        [
+            'slug'       => 'cowgirl',
+            'image'      => '/assets/img/bears/cowgirl.jpeg',
+            'name'       => 'The cowgirl bear',
+            'alt'        => 'A dark brown leatherette teddy bear dressed as a cowgirl, in a brown waistcoat trimmed with paw-print ribbon, a yellow striped skirt, a neckerchief and a cowboy hat',
+            'collection' => 'character',
+            'route'      => 'character',
+            'blurb'      => 'Waistcoat, neckerchief and a full striped skirt. The paw prints run round the waistcoat, the hat brim and the woggle, and there is one sewn on as a badge.',
+            'label'      => [
+                ['Made new in', 'Dark brown leatherette'],
+                ['Finished with', 'Leatherette waistcoat and hat, striped skirt, paw-print trim'],
+            ],
+        ],
+        [
+            'slug'       => 'bulls-pinstripe',
+            'image'      => '/assets/img/bears/bulls-pinstripe.jpeg',
+            'name'       => 'The pinstripe Bulls bear',
+            'alt'        => 'A navy teddy bear sewn from a pinstriped Bulls rugby jersey, with light blue ears and foot pads, a cap with the embroidered Bulls logo and a team scarf',
+            'collection' => 'kit',
+            'route'      => 'memory',
+            'blurb'      => 'A pinstriped jersey, with the stripes turned to run a different way on each panel. The light blue mesh became the ears and foot pads, and the logo moved up onto the cap.',
+            'label'      => [
+                ['Made from', 'Bulls pinstripe jersey, cap and supporter scarf'],
+                ['Kept', 'Embroidered Bulls logo, scarf fringe'],
+            ],
+        ],
+        [
+            'slug'       => 'misha',
+            'image'      => '/assets/img/bears/misha.jpeg',
+            'name'       => 'Misha',
+            'alt'        => 'A cream and brown teddy bear with paw-print foot pads, a collar reading MISHA with a heart-shaped photo locket of a dog, and a straw hat with a yellow flower',
+            'collection' => 'character',
+            'route'      => 'character',
+            'blurb'      => 'Made for a dog called Misha. The name is on the collar, Misha is in the heart locket, and the foot pads are paws.',
+            'label'      => [
+                ['Made new in', 'Cream fleece and brown suedette'],
+                ['Finished with', 'Name collar, photo locket, straw hat with a flower'],
+            ],
+        ],
+        [
+            'slug'       => 'shirt-and-chinos',
+            'image'      => '/assets/img/bears/shirt-and-chinos.jpeg',
+            'name'       => 'The shirt and chinos bear',
+            'alt'        => 'A teddy bear sewn from a blue and white printed shirt, with khaki ears, arms and foot pads, the khaki shirt collar at its neck, Relay Jeans buttons on its feet and a camouflage cap',
+            'collection' => 'clothes',
+            'route'      => 'memory',
+            'blurb'      => 'A printed shirt and a pair of chinos, the clothes someone actually wore. The collar went on as a collar, and the trouser buttons ended up on the feet.',
+            'label'      => [
+                ['Made from', 'Printed cotton shirt, khaki chinos and a camo cap'],
+                ['Kept', 'Shirt collar, Relay Jeans buttons on both foot pads'],
             ],
         ],
     ];

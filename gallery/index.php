@@ -37,7 +37,8 @@ require dirname(__DIR__) . '/partials/header.php';
     <p class="lead">
       <?= $total ?> bears, finished and gone to the people they were made for.
       <?= $madeUp['kit'] ?> came out of supporters&rsquo; kit, <?= $madeUp['nursery'] ?> out of a
-      cot sheet, <?= $madeUp['character'] ?> were made new and dressed. Yours will not look
+      cot sheet, <?= $madeUp['clothes'] ?> out of someone&rsquo;s own clothes,
+      <?= $madeUp['character'] ?> were made new and dressed. Yours will not look
       like any of them.
     </p>
 
