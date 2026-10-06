@@ -62,6 +62,7 @@ $contact = array_values(array_filter([
 
   <p class="wrap footer__legal label">
     &copy; <?= date('Y') ?> <?= slap_e($o['name']) ?> &middot; Handmade in <?= slap_e($o['region']) ?>
+    &middot; Powered by <a href="https://yellowarcher.co.za">yellowarcher.co.za</a>
   </p>
 </footer>
 

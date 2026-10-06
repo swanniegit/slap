@@ -84,6 +84,19 @@
   border-block-start: 1px solid var(--on-ink-soft);
 }
 
+/* The credit link sits inside a sentence, so it keeps the line's own colour
+   and size and is marked only by its underline, like the links above it. */
+.footer__legal a {
+  color: inherit;
+  text-underline-offset: 0.25em;
+  text-decoration-thickness: 1px;
+  transition: color var(--speed) var(--ease);
+}
+
+.footer__legal a:hover {
+  color: var(--gold);
+}
+
 @media (min-width: 40rem) {
   .footer__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
