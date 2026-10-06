@@ -251,7 +251,10 @@ for asset in /assets/fonts/karla-latin.woff2 /assets/fonts/baloo2-latin.woff2; d
     header "$asset" Cache-Control immutable
 done
 
-third_party=$(printf '%s' "$home" | grep -o 'https://[a-z0-9.-]*' | sort -u               | grep -v 'schema\.org' | grep -v 'slapbabydesigns\.co\.za' || true)
+# Outbound <a> links are stripped first: a link loads nothing until someone
+# clicks it, so it cannot follow anyone. What this guards against is a page
+# that fetches from another host on load (fonts, scripts, styles, images).
+third_party=$(printf '%s' "$home" | sed -E 's/<a [^>]*>//g' | grep -o 'https://[a-z0-9.-]*' | sort -u               | grep -v 'schema\.org' | grep -v 'slapbabydesigns\.co\.za' || true)
 if [[ -z "$third_party" ]]; then
     pass "homepage references no third-party host"
 else
