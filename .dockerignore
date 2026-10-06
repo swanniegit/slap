@@ -24,6 +24,11 @@ node_modules/
 
 # --- Docs, design sources and archives ------------------------------------------
 *.md
+# release-please bookkeeping. version.txt is written by the "simple" release
+# type and would otherwise be served at /version.txt.
+version.txt
+release-please-config.json
+.release-please-manifest.json
 *.zip
 # Claude Design canvases. assets/SLAP Logo.dc.html is the source the brand mark
 # was drawn from; it sits under assets/, so without this line it would be served

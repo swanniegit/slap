@@ -1,0 +1,26 @@
+name: release-please
+
+# Opens (and keeps updating) a release PR from the Conventional Commits on main.
+# Merging that PR tags the release and writes CHANGELOG.md. Only feat: and fix:
+# commits make a release; chore:, ci:, docs: and the rest do not.
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      # RELEASE_PLEASE_TOKEN is a fine-grained PAT, optional. A PR opened with
+      # the default GITHUB_TOKEN does not trigger other workflows, so CI never
+      # reports "verify" on it and branch protection blocks the merge. Without
+      # the PAT, close and reopen the release PR to start CI by hand.
+      - uses: googleapis/release-please-action@v4
+        with:
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN || secrets.GITHUB_TOKEN }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
