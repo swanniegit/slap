@@ -172,6 +172,45 @@ function slap_bears(): array
                 ['Kept', 'Shirt collar, Relay Jeans buttons on both foot pads'],
             ],
         ],
+        [
+            'slug'       => 'denim-apron',
+            'image'      => '/assets/img/bears/denim-apron.jpeg',
+            'name'       => 'The denim apron bear',
+            'alt'        => 'A brown leatherette teddy bear in a denim bib apron with brass eyelets, a frayed pocket and a wooden "handmade with love" button, wearing a denim flat cap and a navy bow tie',
+            'collection' => 'character',
+            'route'      => 'character',
+            'blurb'      => 'A denim bib apron laced on through brass eyelets, with a frayed pocket and a flat cap to match. The wooden button on the bib says handmade with love.',
+            'label'      => [
+                ['Made new in', 'Brown leatherette'],
+                ['Finished with', 'Denim apron and flat cap, navy bow tie, black paw pads'],
+            ],
+        ],
+        [
+            'slug'       => 'navy-and-white',
+            'image'      => '/assets/img/bears/navy-and-white.jpeg',
+            'name'       => 'The navy and white bear',
+            'alt'        => 'A navy leatherette teddy bear with white ears, inner arms and foot pads, wearing a white hat and a bow tie in matching blue and white striped ribbon',
+            'collection' => 'character',
+            'route'      => 'character',
+            'blurb'      => 'Navy leatherette with white on the ears, the inside of the arms and the foot pads. The hat band and the bow tie are cut from the same striped ribbon.',
+            'label'      => [
+                ['Made new in', 'Navy and white leatherette'],
+                ['Finished with', 'White hat, striped ribbon band and bow tie'],
+            ],
+        ],
+        [
+            'slug'       => 'patchwork-tie',
+            'image'      => '/assets/img/bears/patchwork-tie.jpeg',
+            'name'       => 'The patchwork bear',
+            'alt'        => 'A patchwork teddy bear with a floral head, a striped muzzle, a pink check body, floral arms and painted-print legs, with black denim ears and foot pads, a black denim cap and a matching tie',
+            'collection' => 'clothes',
+            'route'      => 'memory',
+            'blurb'      => 'Six different prints on one bear: florals on the head and arms, a pink check body and a stripe across the muzzle. Black denim holds it together, from the ears and foot pads to the cap and tie.',
+            'label'      => [
+                ['Made from', 'Floral, check, stripe and printed cottons, with black denim'],
+                ['Kept', 'A different print on every panel'],
+            ],
+        ],
     ];
 }
 

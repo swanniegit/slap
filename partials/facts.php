@@ -10,7 +10,7 @@
 declare(strict_types=1);
 
 $facts = [
-    ['gold',  'One of one',   'No two bears leave here the same, because no two garments arrive the same.'],
+    ['gold',  'One of one',   'No two bears leave here the same, because no two garments arrive the same. Each stands about 34 cm tall, before the cap.'],
     ['sky',   'Your fabric',  'Match jerseys, cot sheets, baby-grows, uniforms, a shirt nobody can throw away.'],
     ['coral', 'Two sisters',  'Nicolene and Irma, cutting and sewing every panel between them.'],
     ['grape', 'Made to order','Nothing is kept in stock. Yours starts once you have told us about it.'],
