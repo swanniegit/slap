@@ -40,7 +40,10 @@ declare(strict_types=1);
       <figure class="hero__panel panel-stitched">
         <?= slap_img($lead['image'], $lead['alt'], ['eager' => true, 'class' => 'hero__photo']) ?>
         <figcaption>
-          <?php slap_partial('care-label', ['rows' => $lead['label'], 'tone' => 'on-photo']); ?>
+          <?php slap_partial('care-label', [
+              'rows' => [...$lead['label'], ['Height', 'About 34 cm, before the cap']],
+              'tone' => 'on-photo',
+          ]); ?>
         </figcaption>
       </figure>
 
