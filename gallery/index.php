@@ -41,6 +41,7 @@ require dirname(__DIR__) . '/partials/header.php';
       <?= $madeUp['character'] ?> were made new and dressed. Yours will not look
       like any of them.
     </p>
+    <p class="lead">Each bear is about 34&nbsp;cm tall, not counting the cap or hat.</p>
 
     <nav class="chips" aria-label="Filter by what the bear was made from">
       <a class="chip<?= $made === null ? ' chip--on' : '' ?>" href="/gallery/"
