@@ -211,6 +211,32 @@ function slap_bears(): array
                 ['Kept', 'A different print on every panel'],
             ],
         ],
+        [
+            'slug'       => 'green-diamond',
+            'image'      => '/assets/img/bears/green-diamond.jpeg',
+            'name'       => 'The green diamond bear',
+            'alt'        => 'A teddy bear sewn from a green diamond-print fabric, with peach and brown geometric print on the ears, the top of the head, the arms and legs, and a brown satin bow with a small green heart button',
+            'collection' => 'clothes',
+            'route'      => 'memory',
+            'blurb'      => 'Two prints that belong together: a green diamond for the body, muzzle and foot pads, and a peach geometric for the ears, arms and the stripe down the forehead. A brown satin bow, fastened with a green heart.',
+            'label'      => [
+                ['Made from', 'Green diamond print and peach geometric print cottons'],
+                ['Kept', 'The geometric print centred down the forehead'],
+            ],
+        ],
+        [
+            'slug'       => 'blue-medallion',
+            'image'      => '/assets/img/bears/blue-medallion.jpeg',
+            'name'       => 'The blue medallion bear',
+            'alt'        => 'A teddy bear sewn from a navy, blue and peach medallion-print fabric, with plain navy ears, a black heart-shaped nose and a thin navy and gold ribbon tied at the neck',
+            'collection' => 'clothes',
+            'route'      => 'memory',
+            'blurb'      => 'A navy and peach print full of medallions, cut so a whole one lands on each foot pad. Plain navy ears, a heart for a nose, and a thin gold-threaded ribbon.',
+            'label'      => [
+                ['Made from', 'Navy medallion print cotton, plain navy ears'],
+                ['Kept', 'A whole medallion on each foot pad'],
+            ],
+        ],
     ];
 }
 
