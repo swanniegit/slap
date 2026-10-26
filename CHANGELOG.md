@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/swanniegit/slap/compare/v1.1.0...v1.2.0) (2026-10-26)
+
+
+### Features
+
+* add the green diamond and blue medallion bears ([4d07f46](https://github.com/swanniegit/slap/commit/4d07f4669f9ac2ea0059c087114305c8fc95cca8))
+
 ## [1.1.0](https://github.com/swanniegit/slap/compare/v1.0.0...v1.1.0) (2026-10-07)
 
 
